@@ -17,8 +17,10 @@
 #
 
 SOURCES += \
+    $$PWD/MemoryRepository.cpp \
     $$PWD/Trajectory.cpp
 
 HEADERS += \
+    $$PWD/MemoryRepository.h \
     $$PWD/Repository.h \
     $$PWD/Trajectory.h

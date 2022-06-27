@@ -20,4 +20,5 @@ SOURCES += \
     $$PWD/Trajectory.cpp
 
 HEADERS += \
+    $$PWD/Repository.h \
     $$PWD/Trajectory.h

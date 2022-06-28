@@ -33,6 +33,8 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
+#include "qcustomplot.h"
+
 QT_BEGIN_NAMESPACE
 
 class MainWindow;
@@ -41,17 +43,23 @@ class Ui_MainWindow
 {
     friend MainWindow;
 
+    Q_DECLARE_TR_FUNCTIONS(Ui_MainWindow);
+
 protected:
-    explicit Ui_MainWindow() //NOLINT(cppcoreguidelines-pro-type-member-init)
-    {
-    }
+    explicit Ui_MainWindow() = default; //NOLINT(cppcoreguidelines-pro-type-member-init)
 
 private:
 
     QWidget *centralwidget{};
-    QHBoxLayout *centralLayout{};
+    QVBoxLayout *mainLayout{};
 
-    QLabel *helloWorldLabel{};
+    QCustomPlot * plot{};
+
+    QFrame * controlFrame{};
+    QHBoxLayout * controlLayout{};
+
+    QPushButton *playPauseButton{};
+    QPushButton *stopButton{};
 
 public:
     void setupUi(QMainWindow *MainWindow)
@@ -63,37 +71,42 @@ public:
 
         MainWindow->resize(1200, 800); //NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
-        QSizePolicy sizePolicyExpExp(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        sizePolicyExpExp.setHorizontalStretch(0);
-        sizePolicyExpExp.setVerticalStretch(0);
-
-        QSizePolicy sizePolicyPreFix(QSizePolicy::Preferred, QSizePolicy::Fixed);
-        sizePolicyPreFix.setHorizontalStretch(0);
-        sizePolicyPreFix.setVerticalStretch(0);
-
-        QSizePolicy sizePolicyFixPre(QSizePolicy::Fixed, QSizePolicy::Preferred);
-        sizePolicyFixPre.setHorizontalStretch(0);
-        sizePolicyFixPre.setVerticalStretch(0);
-
-        QSizePolicy sizePolicyFixFix(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicyFixFix.setHorizontalStretch(0);
-        sizePolicyFixFix.setVerticalStretch(0);
-
-        QSizePolicy sizePolicyMinMin(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicyMinMin.setHorizontalStretch(0);
-        sizePolicyMinMin.setVerticalStretch(0);
-
         centralwidget = new QWidget(MainWindow); //NOLINT(cppcoreguidelines-owning-memory
         centralwidget->setObjectName(QString::fromUtf8(u8"centralwidget"));
-        sizePolicyExpExp.setHeightForWidth(centralwidget->sizePolicy().hasHeightForWidth());
-        centralwidget->setSizePolicy(sizePolicyExpExp);
 
-        centralLayout = new QHBoxLayout(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
-        centralLayout->setObjectName(QString::fromUtf8(u8"centralLayout"));
+        mainLayout = new QVBoxLayout(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
+        mainLayout->setObjectName(QString::fromUtf8(u8"mainLayout"));
 
-        helloWorldLabel = new QLabel(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
-        helloWorldLabel->setObjectName(QString::fromUtf8(u8"helloWorldLabel"));
-        centralLayout->addWidget(helloWorldLabel);
+        plot = new QCustomPlot(centralwidget); //NOLINT(cppcoreguidelines-owning-memory)
+        plot->setObjectName(QString::fromUtf8(u8"plot"));
+
+        mainLayout->addWidget(plot);
+
+        controlFrame = new QFrame(centralwidget); //NOLINT(cppcoreguidelines-owning-memory)
+        controlFrame->setObjectName(QString::fromUtf8(u8"controlFrame"));
+        controlFrame->setFrameShape(QFrame::StyledPanel);
+        controlFrame->setFrameShadow(QFrame::Raised);
+
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(controlFrame->sizePolicy().hasHeightForWidth());
+        controlFrame->setSizePolicy(sizePolicy);
+
+        controlLayout = new QHBoxLayout(controlFrame); //NOLINT(cppcoreguidelines-owning-memory)
+        controlLayout->setObjectName(QString::fromUtf8(u8"controlLayout"));
+
+        playPauseButton = new QPushButton(controlFrame); //NOLINT(cppcoreguidelines-owning-memory)
+        playPauseButton->setObjectName(QString::fromUtf8(u8"playPauseButton"));
+        controlLayout->addWidget(playPauseButton);
+
+        stopButton = new QPushButton(controlFrame); //NOLINT(cppcoreguidelines-owning-memory)
+        stopButton->setObjectName(QString::fromUtf8(u8"stopButton"));
+        controlLayout->addWidget(stopButton);
+
+        mainLayout->addWidget(controlFrame);
+
+        MainWindow->setCentralWidget(centralwidget);
 
         retranslateUi(MainWindow);
 
@@ -104,7 +117,8 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", u8"QtMolMove", nullptr));
 
-        helloWorldLabel->setText(QCoreApplication::translate("MainWindow", u8"Hello World!", nullptr));
+        this->playPauseButton->setText(QCoreApplication::translate("MainWindow", u8"Play/Pause", nullptr));
+        this->stopButton->setText(QCoreApplication::translate("MainWindow", u8"Stop", nullptr));
     } // retranslateUi
 
 };
@@ -113,9 +127,7 @@ namespace Ui {
     class MainWindow: public Ui_MainWindow
     {
     public:
-        explicit MainWindow()
-        {
-        }
+        explicit MainWindow() = default;
     };
 } // namespace Ui
 

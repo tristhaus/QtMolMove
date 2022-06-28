@@ -40,7 +40,13 @@ public:
     ~MainWindow() override;
 
 private:
+    void ShowNotImplementedBox();
     void ShowAboutDialog();
+
+private slots:
+    void OnAboutTriggered();
+    void OnPlayPausePressed();
+    void OnStopPressed();
 };
 
 #endif // MAINWINDOW_H

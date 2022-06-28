@@ -28,7 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->aboutMenuAction, &QAction::triggered, this, &MainWindow::ShowAboutDialog);
+    connect(ui->aboutMenuAction, &QAction::triggered, this, &MainWindow::OnAboutTriggered);
+    connect(ui->playPauseButton, &QAbstractButton::pressed, this, &MainWindow::OnPlayPausePressed);
+    connect(ui->stopButton, &QAbstractButton::pressed, this, &MainWindow::OnStopPressed);
 }
 
 MainWindow::~MainWindow()
@@ -56,4 +58,32 @@ void MainWindow::ShowAboutDialog()
     this->aboutMessageBox->exec();
 
     this->aboutMessageBox.reset();
+}
+
+void MainWindow::ShowNotImplementedBox()
+{
+    QString messageBoxTitle = QString::fromUtf8("Not implemented");
+    QString messageBoxText = QString::fromUtf8("Feature not yet implemented");
+
+    auto box = std::make_unique<QMessageBox>(
+                QMessageBox::Icon::Critical,
+                messageBoxTitle,
+                messageBoxText);
+
+    box->exec();
+}
+
+void MainWindow::OnAboutTriggered()
+{
+    this->ShowAboutDialog();
+}
+
+void MainWindow::OnPlayPausePressed()
+{
+    this->ShowNotImplementedBox();
+}
+
+void MainWindow::OnStopPressed()
+{
+    this->ShowNotImplementedBox();
 }

@@ -63,6 +63,8 @@ private:
 
     QPushButton *playPauseButton{};
     QPushButton *stopButton{};
+    QPushButton *stepBackButton{};
+    QPushButton *stepForwardButton{};
 
 public:
     void setupUi(QMainWindow * MainWindow)
@@ -109,6 +111,14 @@ public:
         stopButton->setObjectName(QString::fromUtf8(u8"stopButton"));
         controlLayout->addWidget(stopButton);
 
+        stepBackButton = new QPushButton(controlFrame); //NOLINT(cppcoreguidelines-owning-memory)
+        stepBackButton->setObjectName(QString::fromUtf8(u8"stepBackButton"));
+        controlLayout->addWidget(stepBackButton);
+
+        stepForwardButton = new QPushButton(controlFrame); //NOLINT(cppcoreguidelines-owning-memory)
+        stepForwardButton->setObjectName(QString::fromUtf8(u8"stepForwardButton"));
+        controlLayout->addWidget(stepForwardButton);
+
         mainLayout->addWidget(controlFrame);
 
         MainWindow->setCentralWidget(centralwidget);
@@ -122,6 +132,8 @@ public:
 
         this->playPauseButton->setText(QCoreApplication::translate("MainWindow", "Play/Pause", nullptr));
         this->stopButton->setText(QCoreApplication::translate("MainWindow", "Stop", nullptr));
+        this->stepBackButton->setText(QCoreApplication::translate("MainWindow", "Step Back", nullptr));
+        this->stepForwardButton->setText(QCoreApplication::translate("MainWindow", "Step Forward", nullptr));
     } // retranslateUi
 
     void setupMenuBar(QMainWindow * MainWindow)

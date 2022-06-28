@@ -21,6 +21,10 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <atomic>
+
+#include "../Backend/MemoryRepository.h"
+#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -35,22 +39,38 @@ class MainWindow : public QMainWindow //NOLINT (cppcoreguidelines-special-member
     friend FrontendTest;
 
 private:
+    std::shared_ptr<Backend::Repository> repository;
     Ui::MainWindow *ui;
 
+    std::atomic_uint index = 0;
+
     std::unique_ptr<QMessageBox> aboutMessageBox;
+    std::shared_ptr<Backend::Trajectory> trajectory;
+    std::vector<QColor> colors;
+    std::vector<QCPItemEllipse*> ellipses;
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(std::shared_ptr<Backend::Repository> repository, QWidget *parent = nullptr);
     ~MainWindow() override;
 
 private:
+    void InitPlot();
+    void Update();
+    void UpdatePlot();
+    void LoadTrajectory();
     void ShowNotImplementedBox();
     void ShowAboutDialog();
+    void BackOneFrame();
+    void ForwardOneFrame();
+    QColor GetColorFor(int id);
 
 private slots:
+    void OnLoadTriggered();
     void OnAboutTriggered();
     void OnPlayPausePressed();
     void OnStopPressed();
+    void OnStepBackPressed();
+    void OnStepForwardPressed();
 };
 
 #endif // MAINWINDOW_H

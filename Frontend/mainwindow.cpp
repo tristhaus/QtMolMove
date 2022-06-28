@@ -22,20 +22,124 @@
 #include <QMessageBox>
 #include <utility>
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(std::shared_ptr<Backend::Repository> repository, QWidget *parent)
     : QMainWindow(parent),
+      repository(std::move(repository)),
       ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
+    connect(ui->loadMenuAction, &QAction::triggered, this, &MainWindow::OnLoadTriggered);
     connect(ui->aboutMenuAction, &QAction::triggered, this, &MainWindow::OnAboutTriggered);
     connect(ui->playPauseButton, &QAbstractButton::pressed, this, &MainWindow::OnPlayPausePressed);
     connect(ui->stopButton, &QAbstractButton::pressed, this, &MainWindow::OnStopPressed);
+    connect(ui->stepBackButton, &QAbstractButton::pressed, this, &MainWindow::OnStepBackPressed);
+    connect(ui->stepForwardButton, &QAbstractButton::pressed, this, &MainWindow::OnStepForwardPressed);
+
+    this->InitPlot();
+
+    this->Update();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::InitPlot()
+{
+    auto plot = this->ui->plot;
+
+    plot->xAxis->setLabel("x");
+    plot->yAxis->setLabel("y");
+    plot->xAxis->setRange(-10.0, 10.0);
+    plot->yAxis->setRange(-10.0, 10.0);
+
+    this->colors.push_back(QColor::fromRgb(0x41, 0x69, 0xe1)); //royalblue
+    this->colors.push_back(QColor::fromRgb(0x2f, 0x4f, 0x4f)); //darkslategray
+    this->colors.push_back(QColor::fromRgb(0x80, 0x00, 0x00)); //maroon
+    this->colors.push_back(QColor::fromRgb(0xff, 0xd7, 0x00)); //gold
+    this->colors.push_back(QColor::fromRgb(0x00, 0x00, 0x8b)); //darkblue
+
+    this->colors.push_back(QColor::fromRgb(0x00, 0xff, 0xff)); //aqua
+    this->colors.push_back(QColor::fromRgb(0xda, 0x70, 0xd6)); //orchid
+    this->colors.push_back(QColor::fromRgb(0x2e, 0x8b, 0x57)); //seagreen
+    this->colors.push_back(QColor::fromRgb(0x00, 0xbf, 0xff)); //deepskyblue
+    this->colors.push_back(QColor::fromRgb(0xff, 0x8c, 0x00)); //darkorange
+
+    this->colors.push_back(QColor::fromRgb(0xff, 0x00, 0x00)); //red
+    this->colors.push_back(QColor::fromRgb(0x00, 0x00, 0xff)); //blue
+    this->colors.push_back(QColor::fromRgb(0xee, 0xe8, 0xaa)); //palegoldenrod
+    this->colors.push_back(QColor::fromRgb(0xff, 0x14, 0x93)); //deeppink
+    this->colors.push_back(QColor::fromRgb(0x80, 0x80, 0x00)); //olive
+
+    this->colors.push_back(QColor::fromRgb(0xd8, 0xbf, 0xd8)); //thistle
+    this->colors.push_back(QColor::fromRgb(0xff, 0x00, 0xff)); //fuchsia
+    this->colors.push_back(QColor::fromRgb(0x00, 0xff, 0x7f)); //springgreen
+    this->colors.push_back(QColor::fromRgb(0xf0, 0x80, 0x80)); //lightcoral
+    this->colors.push_back(QColor::fromRgb(0xad, 0xff, 0x2f)); //greenyellow
+}
+
+void MainWindow::Update()
+{
+    auto hasMultiframeTrajectory = this->trajectory != nullptr && this->trajectory->Frames().size() > 1;
+
+    this->ui->playPauseButton->setEnabled(hasMultiframeTrajectory && this->index + 1 < this->trajectory->Frames().size());
+    this->ui->stopButton->setEnabled(hasMultiframeTrajectory && this->index > 0);
+    this->ui->stepBackButton->setEnabled(hasMultiframeTrajectory && this->index > 0);
+    this->ui->stepForwardButton->setEnabled(hasMultiframeTrajectory && this->index + 1 < this->trajectory->Frames().size());
+
+    this->UpdatePlot();
+}
+
+void MainWindow::UpdatePlot()
+{
+    if (this->trajectory == nullptr)
+    {
+        return;
+    }
+
+    auto plot = this->ui->plot;
+
+    if (ellipses.empty())
+    {
+        auto viewport = this->trajectory->Viewport();
+
+        plot->xAxis->setRange(viewport.minX, viewport.maxX);
+        plot->yAxis->setRange(viewport.minY, viewport.maxY);
+
+        auto particles = this->trajectory->Particles();
+
+        for (auto & particle : particles)
+        {
+            auto color = this->GetColorFor(particle.id);
+            auto ellipse = new QCPItemEllipse(plot);
+            ellipse->setPen(color);
+            ellipse->setBrush(color);
+
+            this->ellipses.push_back(ellipse);
+        }
+    }
+
+    auto frames = this->trajectory->Frames();
+    auto & frame = frames[this->index];
+    auto particleSize = this->trajectory->ParticleSize();
+
+    for (unsigned int particleIndex = 0; particleIndex < this->trajectory->ParticleCount(); ++particleIndex)
+    {
+        auto ellipse = this->ellipses[particleIndex];
+        auto coordinate = frame.coordinates[particleIndex];
+
+        ellipse->topLeft->setCoords(coordinate.x - particleSize, coordinate.y + particleSize);
+        ellipse->bottomRight->setCoords(coordinate.x + particleSize, coordinate.y - particleSize);
+    }
+
+    plot->replot();
+}
+
+QColor MainWindow::GetColorFor(int id)
+{
+    return this->colors[id % this->colors.size()];
 }
 
 void MainWindow::ShowAboutDialog()
@@ -73,6 +177,40 @@ void MainWindow::ShowNotImplementedBox()
     box->exec();
 }
 
+void MainWindow::LoadTrajectory()
+{
+    this->trajectory = this->repository->Load("dummy");
+    this->index = 0U;
+    this->ui->plot->clearItems();
+
+    this->Update();
+}
+
+void MainWindow::BackOneFrame()
+{
+    if (this->index > 0)
+    {
+        --(this->index);
+
+        this->Update();
+    }
+}
+
+void MainWindow::ForwardOneFrame()
+{
+    if (this->index + 1 < this->trajectory->Frames().size())
+    {
+        ++(this->index);
+
+        this->Update();
+    }
+}
+
+void MainWindow::OnLoadTriggered()
+{
+    this->LoadTrajectory();
+}
+
 void MainWindow::OnAboutTriggered()
 {
     this->ShowAboutDialog();
@@ -86,4 +224,14 @@ void MainWindow::OnPlayPausePressed()
 void MainWindow::OnStopPressed()
 {
     this->ShowNotImplementedBox();
+}
+
+void MainWindow::OnStepBackPressed()
+{
+    this->BackOneFrame();
+}
+
+void MainWindow::OnStepForwardPressed()
+{
+    this->ForwardOneFrame();
 }

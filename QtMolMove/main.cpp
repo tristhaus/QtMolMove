@@ -17,6 +17,7 @@
  */
 
 #include "../Frontend/mainwindow.h"
+#include "../Backend/MemoryRepository.h"
 
 #include <QApplication>
 #include <QLocale>
@@ -33,7 +34,7 @@ int main(int argc, char *argv[])
     auto uiLanguages = presentLocale.uiLanguages();
 
     // add default
-    if(!uiLanguages.contains(QString("en")))
+    if (!uiLanguages.contains(QString("en")))
     {
         uiLanguages.append(QString("en"));
     }
@@ -43,20 +44,20 @@ int main(int argc, char *argv[])
     auto langIt = uiLanguages.begin();
     auto langEnd = uiLanguages.end();
     bool hasLoaded = false;
-    for(; langIt != langEnd && !hasLoaded; ++langIt)
+    for (; langIt != langEnd && !hasLoaded; ++langIt)
     {
         auto filename = filenameTemplate.arg(*langIt).replace("-", "_");
         hasLoaded = translator.load(filename);
     }
 
-    if(!hasLoaded)
+    if (!hasLoaded)
     {
         return 1;
     }
 
     QApplication::installTranslator(&translator);
 
-    MainWindow w;
+    MainWindow w(std::make_shared<Backend::MemoryRepository>());
     w.show();
     return QApplication::exec();
 }

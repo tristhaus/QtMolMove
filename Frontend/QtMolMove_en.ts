@@ -4,33 +4,33 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="mainwindow_ui.h" line="133"/>
+        <location filename="mainwindow_ui.h" line="135"/>
         <source>Play/Pause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow_ui.h" line="134"/>
+        <location filename="mainwindow_ui.h" line="136"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow_ui.h" line="135"/>
+        <location filename="mainwindow_ui.h" line="137"/>
         <source>Step Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow_ui.h" line="136"/>
+        <location filename="mainwindow_ui.h" line="138"/>
         <source>Step Forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow_ui.h" line="145"/>
+        <location filename="mainwindow_ui.h" line="147"/>
         <source>Load ...</source>
         <translation>Load ...</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="43"/>
-        <location filename="mainwindow_ui.h" line="150"/>
+        <location filename="mainwindow_ui.h" line="152"/>
         <source>About %1</source>
         <extracomment>Arg 1 is a placeholder for the program name</extracomment>
         <translation>About %1</translation>
@@ -38,8 +38,8 @@
     <message>
         <location filename="mainwindow.cpp" line="44"/>
         <location filename="mainwindow.cpp" line="48"/>
-        <location filename="mainwindow_ui.h" line="131"/>
-        <location filename="mainwindow_ui.h" line="151"/>
+        <location filename="mainwindow_ui.h" line="133"/>
+        <location filename="mainwindow_ui.h" line="153"/>
         <source>QtMolMove</source>
         <translation>QtMolMove</translation>
     </message>

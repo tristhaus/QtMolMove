@@ -26,9 +26,13 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class FrontendTest;
+
 class MainWindow : public QMainWindow //NOLINT (cppcoreguidelines-special-member-functions)
 {
     Q_OBJECT
+
+    friend FrontendTest;
 
 private:
     Ui::MainWindow *ui;

@@ -38,10 +38,12 @@
 QT_BEGIN_NAMESPACE
 
 class MainWindow;
+class FrontendTest;
 
 class Ui_MainWindow
 {
     friend MainWindow;
+    friend FrontendTest;
 
     Q_DECLARE_TR_FUNCTIONS(Ui_MainWindow);
 
@@ -53,18 +55,18 @@ private:
     QAction * loadMenuAction{};
     QAction * aboutMenuAction{};
 
-    QWidget *centralwidget{};
-    QVBoxLayout *mainLayout{};
+    QWidget * centralwidget{};
+    QVBoxLayout * mainLayout{};
 
     QCustomPlot * plot{};
 
     QFrame * controlFrame{};
     QHBoxLayout * controlLayout{};
 
-    QPushButton *playPauseButton{};
-    QPushButton *stopButton{};
-    QPushButton *stepBackButton{};
-    QPushButton *stepForwardButton{};
+    QPushButton * playPauseButton{};
+    QPushButton * stopButton{};
+    QPushButton * stepBackButton{};
+    QPushButton * stepForwardButton{};
 
 public:
     void setupUi(QMainWindow * MainWindow)

@@ -27,9 +27,33 @@ MainWindow::MainWindow(QWidget *parent)
       ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    connect(ui->aboutMenuAction, &QAction::triggered, this, &MainWindow::ShowAboutDialog);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::ShowAboutDialog()
+{
+    auto messageBoxTitleTemplate = QCoreApplication::translate("MainWindow", "About %1", nullptr);
+    auto messageBoxTitle = messageBoxTitleTemplate.arg(QCoreApplication::translate("MainWindow", "QtMolMove", nullptr));
+
+    //: Arg 1 is a placeholder for the program name. Format is Qt Rich Text.
+    auto messageBoxTextTemplate = QCoreApplication::translate("MainWindow", R"(A simple program to display 2D trajectories of spherical objects.<br /><br />%1 Copyright (C) 2022 and later, tristhaus<br />This program comes with ABSOLUTELY NO WARRANTY.<br />This is free software, and you are welcome to redistribute it under certain conditions. See provided LICENSE file for details.<br /><br />Graphical user interface built using <a href="https://doc.qt.io/">Qt</a>.<br /><a href="https://www.qcustomplot.com/">QCustomPlot</a> library (Version 2.1.0) by Emanuel Eichhammer used under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL v3</a>.)", nullptr);
+    auto messageBoxText = messageBoxTextTemplate.arg(QCoreApplication::translate("MainWindow", "QtMolMove", nullptr));
+
+    this->aboutMessageBox = std::make_unique<QMessageBox>(
+                    QMessageBox::Icon::NoIcon,
+                    messageBoxTitle,
+                    messageBoxText);
+
+    this->aboutMessageBox->setTextFormat(Qt::RichText);
+    this->aboutMessageBox->setTextInteractionFlags(Qt::TextBrowserInteraction);
+
+    this->aboutMessageBox->exec();
+
+    this->aboutMessageBox.reset();
 }

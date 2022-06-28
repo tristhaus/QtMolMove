@@ -19,10 +19,43 @@
 #include "../Frontend/mainwindow.h"
 
 #include <QApplication>
+#include <QLocale>
+#include <QTranslator>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    QApplication::setWindowIcon(QIcon(":/icon.ico"));
+
+    QTranslator translator;
+    QLocale presentLocale = QLocale::system();
+    auto uiLanguages = presentLocale.uiLanguages();
+
+    // add default
+    if(!uiLanguages.contains(QString("en")))
+    {
+        uiLanguages.append(QString("en"));
+    }
+
+    // iterate over possible languages
+    const QString filenameTemplate(":/QtMolMove_%1.qm");
+    auto langIt = uiLanguages.begin();
+    auto langEnd = uiLanguages.end();
+    bool hasLoaded = false;
+    for(; langIt != langEnd && !hasLoaded; ++langIt)
+    {
+        auto filename = filenameTemplate.arg(*langIt).replace("-", "_");
+        hasLoaded = translator.load(filename);
+    }
+
+    if(!hasLoaded)
+    {
+        return 1;
+    }
+
+    QApplication::installTranslator(&translator);
+
     MainWindow w;
     w.show();
     return QApplication::exec();

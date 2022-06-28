@@ -49,6 +49,9 @@ protected:
     explicit Ui_MainWindow() = default; //NOLINT(cppcoreguidelines-pro-type-member-init)
 
 private:
+    QMenuBar * menubar{};
+    QAction * loadMenuAction{};
+    QAction * aboutMenuAction{};
 
     QWidget *centralwidget{};
     QVBoxLayout *mainLayout{};
@@ -62,7 +65,7 @@ private:
     QPushButton *stopButton{};
 
 public:
-    void setupUi(QMainWindow *MainWindow)
+    void setupUi(QMainWindow * MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
         {
@@ -70,6 +73,8 @@ public:
         }
 
         MainWindow->resize(1200, 800); //NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+
+        setupMenuBar(MainWindow);
 
         centralwidget = new QWidget(MainWindow); //NOLINT(cppcoreguidelines-owning-memory
         centralwidget->setObjectName(QString::fromUtf8(u8"centralwidget"));
@@ -109,18 +114,33 @@ public:
         MainWindow->setCentralWidget(centralwidget);
 
         retranslateUi(MainWindow);
-
-        QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", u8"QtMolMove", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "QtMolMove", nullptr));
 
-        this->playPauseButton->setText(QCoreApplication::translate("MainWindow", u8"Play/Pause", nullptr));
-        this->stopButton->setText(QCoreApplication::translate("MainWindow", u8"Stop", nullptr));
+        this->playPauseButton->setText(QCoreApplication::translate("MainWindow", "Play/Pause", nullptr));
+        this->stopButton->setText(QCoreApplication::translate("MainWindow", "Stop", nullptr));
     } // retranslateUi
 
+    void setupMenuBar(QMainWindow * MainWindow)
+    {
+        menubar = new QMenuBar(MainWindow);
+        menubar->setObjectName(QString::fromUtf8("menubar"));
+        menubar->setGeometry(QRect(0, 0, 600, 21));
+
+        auto openGameMenuActionLabel = QCoreApplication::translate("MainWindow", "Load ...", nullptr);
+        loadMenuAction = menubar->addAction(openGameMenuActionLabel);
+        loadMenuAction->setObjectName(QString::fromUtf8("load"));
+
+        //: Arg 1 is a placeholder for the program name
+        auto aboutActionLabelTemplate = QCoreApplication::translate("MainWindow", "About %1", nullptr);
+        auto aboutActionLabel = aboutActionLabelTemplate.arg(QCoreApplication::translate("MainWindow", "QtMolMove", nullptr));
+        aboutMenuAction = menubar->addAction(aboutActionLabel);
+        aboutMenuAction->setObjectName(QString::fromUtf8("about"));
+        MainWindow->setMenuBar(menubar);
+    } // setupMenuBar
 };
 
 namespace Ui {

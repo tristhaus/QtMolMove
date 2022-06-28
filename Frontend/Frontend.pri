@@ -25,4 +25,9 @@ HEADERS += \
     $$PWD/mainwindow_ui.h  \
     $$PWD/qcustomplot.h
 
-FORMS +=
+TRANSLATIONS += \
+    $$PWD/QtMolMove_en.ts \
+    $$PWD/QtMolMove_de.ts
+
+RESOURCES += \
+    $$PWD/translations.qrc

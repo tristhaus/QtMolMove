@@ -24,10 +24,12 @@ Backend::Trajectory::Trajectory(
         unsigned int particleCount,
         Backend::unit particleSize,
         Backend::Viewport viewport,
+        std::vector<Particle> particles,
         std::vector<Frame> frames)
     : particleCount(particleCount),
       particleSize(particleSize),
       viewport(viewport),
+      particles(std::move(particles)),
       frames(std::move(frames))
 {
 }
@@ -45,6 +47,11 @@ Backend::unit Backend::Trajectory::ParticleSize() const
 Backend::Viewport Backend::Trajectory::Viewport() const
 {
     return this->viewport;
+}
+
+std::vector<Backend::Particle> Backend::Trajectory::Particles() const
+{
+    return this->particles;
 }
 
 std::vector<Backend::Frame> Backend::Trajectory::Frames() const

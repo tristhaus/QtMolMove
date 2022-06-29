@@ -22,13 +22,19 @@ std::shared_ptr<Backend::Trajectory> Backend::MemoryRepository::Load(std::string
 {
     Backend::Viewport viewport(-10.0, 10.0, -10.0, 10.0);
 
-    auto frames = std::vector<Backend::Frame>
+    auto particles = std::vector<Backend::Particle>
     {
-            Backend::Frame(std::vector<Backend::Particle> { Backend::Particle(-6.0, 4.0, 1), Backend::Particle( 6.0, -4.0, 2) }),
-            Backend::Frame(std::vector<Backend::Particle> { Backend::Particle(-3.0, 4.0, 1), Backend::Particle( 3.0, -4.0, 2) }),
-            Backend::Frame(std::vector<Backend::Particle> { Backend::Particle( 3.0, 4.0, 1), Backend::Particle(-3.0, -4.0, 2) }),
-            Backend::Frame(std::vector<Backend::Particle> { Backend::Particle( 6.0, 4.0, 1), Backend::Particle(-6.0, -4.0, 2) })
+            Backend::Particle(1),
+            Backend::Particle(2)
     };
 
-    return std::make_shared<Backend::Trajectory>(2, 1.25, viewport, frames);
+    auto frames = std::vector<Backend::Frame>
+    {
+            Backend::Frame(std::vector<Backend::Coordinate> { Backend::Coordinate(-6.0, 4.0), Backend::Coordinate( 6.0, -4.0) }),
+            Backend::Frame(std::vector<Backend::Coordinate> { Backend::Coordinate(-3.0, 4.0), Backend::Coordinate( 3.0, -4.0) }),
+            Backend::Frame(std::vector<Backend::Coordinate> { Backend::Coordinate( 3.0, 4.0), Backend::Coordinate(-3.0, -4.0) }),
+            Backend::Frame(std::vector<Backend::Coordinate> { Backend::Coordinate( 6.0, 4.0), Backend::Coordinate(-6.0, -4.0) })
+    };
+
+    return std::make_shared<Backend::Trajectory>(2, 1.25, viewport, particles, frames);
 }

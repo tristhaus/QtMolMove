@@ -43,22 +43,29 @@ namespace Backend
     class Particle
     {
     public:
+        const unsigned int id;
+        explicit Particle(unsigned int id)
+            : id(id)
+        {}
+    };
+
+    class Coordinate
+    {
+    public:
         const unit x;
         const unit y;
-        const unsigned int id;
-        explicit Particle(unit x, unit y, unsigned int id)
+        explicit Coordinate(unit x, unit y)
             : x(x),
-              y(y),
-              id(id)
+              y(y)
         {}
     };
 
     class Frame
     {
     public:
-        const std::vector<Particle> particles;
-        explicit Frame(std::vector<Particle> particles)
-            : particles(std::move(particles))
+        const std::vector<Coordinate> coordinates;
+        explicit Frame(std::vector<Coordinate> coordinates)
+            : coordinates(std::move(coordinates))
         {}
     };
 
@@ -68,14 +75,16 @@ namespace Backend
         unsigned int particleCount;
         unit particleSize;
         Viewport viewport;
+        std::vector<Particle> particles;
         std::vector<Frame> frames;
 
     public:
-        explicit Trajectory(unsigned int particleCount, unit particleSize, Viewport viewport, std::vector<Frame> frames);
+        explicit Trajectory(unsigned int particleCount, unit particleSize, Viewport viewport, std::vector<Particle> particles, std::vector<Frame> frames);
 
         [[nodiscard]] unsigned int ParticleCount() const;
         [[nodiscard]] unit ParticleSize() const;
         [[nodiscard]] Viewport Viewport() const;
+        [[nodiscard]] std::vector<Particle> Particles() const;
         [[nodiscard]] std::vector<Frame> Frames() const;
     };
 }

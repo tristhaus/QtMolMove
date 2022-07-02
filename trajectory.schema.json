@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft-04/schema",
+  "$id": "https://github.com/tristhaus/QtMolMove/blob/trunk/trajectory.schema.json",
+  "title": "Trajectory",
+  "description": "A trajectory for QtMolMove.",
+  "version": 1,
+  "type": "object",
+  "properties": {
+    "Version": {
+      "description": "The schema version",
+      "type": "integer",
+      "minimum": 1
+    },
+    "Size": {
+      "description": "The uniform display size of the particles",
+      "type": "number"
+    },
+    "Viewport": {
+      "description": "The viewport to be used for the display",
+      "type": "object",
+      "properties": {
+        "MinX": {
+          "description": "The left edge of the viewport",
+          "type": "number"
+        },
+        "MaxX": {
+          "description": "The right edge of the viewport",
+          "type": "number"
+        },
+        "MinY": {
+          "description": "The bottom edge of the viewport",
+          "type": "number"
+        },
+        "MaxY": {
+          "description": "The top edge of the viewport",
+          "type": "number"
+        }
+      },
+      "required": [
+        "MinX",
+        "MaxX",
+        "MinY",
+        "MaxY"
+      ]
+    },
+    "Particles": {
+      "description": "Descriptions of the particles. Order must match Frames[] objects",
+      "type": "array",
+      "items": {
+        "description": "Description of one particle",
+        "type": "object",
+        "properties": {
+          "Id": {
+            "description": "The identity of a particle. Particles with the same Id will have the same color",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 19
+          }
+        },
+        "required": [
+          "Id"
+        ]
+      },
+      "minItems": 1
+    },
+    "Frames": {
+      "description": "The collection of frames to display",
+      "type": "array",
+      "items": {
+        "description": "One frame containing coordinate descriptions for each particle",
+        "type": "array",
+        "items": {
+          "description": "A coordinate description for the matching particle",
+          "type": "object",
+          "properties": {
+            "X": {
+              "description": "The x-coordinate for a particle",
+              "type": "number"
+            },
+            "Y": {
+              "description": "The y-coordinate for a particle",
+              "type": "number"
+            }
+          },
+          "required": [
+            "X",
+            "Y"
+          ]
+        },
+        "minItems": 1
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "Version",
+    "Size",
+    "Viewport",
+    "Particles",
+    "Frames"
+  ]
+}

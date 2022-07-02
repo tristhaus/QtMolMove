@@ -16,9 +16,20 @@
 #
 #
 
-TEMPLATE = subdirs
+include(../Backend/Backend.pri)
+include(../TestHelper/TestHelper.pri)
 
-SUBDIRS += \
-    QtMolMove \
-    MainWindowTest \
-    BackendTest
+# you may need to change this
+GOOGLETEST_DIR = D:\\VSProject\\googletest
+
+include(gtest_dependency.pri)
+
+TEMPLATE = app
+CONFIG += console c++11 thread
+CONFIG -= app_bundle
+
+HEADERS += \
+    tst_deserializer.h
+
+SOURCES += \
+        main.cpp

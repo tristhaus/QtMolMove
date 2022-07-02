@@ -18,9 +18,11 @@
 
 SOURCES += \
     $$PWD/MemoryRepository.cpp \
-    $$PWD/Trajectory.cpp
+    $$PWD/Trajectory.cpp \
+    $$PWD/Deserializer.cpp
 
 HEADERS += \
     $$PWD/MemoryRepository.h \
     $$PWD/Repository.h \
-    $$PWD/Trajectory.h
+    $$PWD/Trajectory.h \
+    $$PWD/Deserializer.h

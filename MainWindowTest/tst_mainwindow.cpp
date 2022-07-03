@@ -27,6 +27,7 @@
 
 #include "../Frontend/mainwindow.h"
 #include "../Frontend/mainwindow_ui.h"
+#include "../TestHelper/MemoryRepository.h"
 #include "../TestHelper/TestRepository.h"
 
 class FrontendTest : public QObject
@@ -45,6 +46,7 @@ private slots:
     void AboutButtonShallTriggerDialogAndOKShallClose();
     void OneFrameTrajectoryShallDisableAllButtons();
     void ThreeFrameTrajectoryShallTransitionStates();
+    void LoadActionShallLoadFromRepository();
 #endif // _USE_LONG_TEST
 };
 
@@ -144,6 +146,7 @@ void FrontendTest::OneFrameTrajectoryShallDisableAllButtons()
     // Arrange
     MainWindow mw(std::make_shared<TestHelper::TestRepository>(1));
     auto ui = mw.ui;
+    mw.presetFilename = QString::fromUtf8("does not matter");
 
     // spy needed such that events actually happen
     QSignalSpy spyLoadAction(ui->loadMenuAction, &QAction::triggered);
@@ -194,6 +197,7 @@ void FrontendTest::ThreeFrameTrajectoryShallTransitionStates()
     // Arrange
     MainWindow mw(std::make_shared<TestHelper::TestRepository>(3));
     auto ui = mw.ui;
+    mw.presetFilename = QString::fromUtf8("does not matter");
 
     // spy needed such that events actually happen
     QSignalSpy spyLoadAction(ui->loadMenuAction, &QAction::triggered);
@@ -306,6 +310,70 @@ void FrontendTest::ThreeFrameTrajectoryShallTransitionStates()
         QVERIFY2(stepBackButtonDisabled, qPrintable(QString::fromUtf8(u8"incorrect state (enabled) for stepBackButton")));
         QVERIFY2(stepForwardButtonEnabled, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for stepForwardButton")));
     }
+}
+
+void FrontendTest::LoadActionShallLoadFromRepository()
+{
+    // Arrange
+    Backend::Viewport viewport(-10.0, 10.0, -10.0, 10.0);
+
+    auto particles = std::vector<Backend::Particle>
+    {
+            Backend::Particle(1),
+            Backend::Particle(2)
+    };
+
+    auto frames = std::vector<Backend::Frame>
+    {
+            Backend::Frame(std::vector<Backend::Coordinate> { Backend::Coordinate(-6.0, 4.0), Backend::Coordinate( 6.0, -4.0) }),
+            Backend::Frame(std::vector<Backend::Coordinate> { Backend::Coordinate(-3.0, 4.0), Backend::Coordinate( 3.0, -4.0) }),
+            Backend::Frame(std::vector<Backend::Coordinate> { Backend::Coordinate( 3.0, 4.0), Backend::Coordinate(-3.0, -4.0) }),
+            Backend::Frame(std::vector<Backend::Coordinate> { Backend::Coordinate( 6.0, 4.0), Backend::Coordinate(-6.0, -4.0) })
+    };
+
+    auto trajectory = std::make_shared<Backend::Trajectory>(2, 1.25, viewport, particles, frames);
+
+    auto repository = std::make_shared<TestHelper::MemoryRepository>();
+
+    std::string identifier = "something";
+
+    repository->Save(identifier, trajectory);
+
+    MainWindow mw(repository);
+    auto ui = mw.ui;
+
+    // Act
+    bool stepNotPossible = !mw.ui->stepForwardButton->isEnabled();
+
+    mw.presetFilename = QString::fromUtf8(identifier);
+
+    // spy needed such that events actually happen
+    QSignalSpy spyLoadAction(ui->loadMenuAction, &QAction::triggered);
+
+    bool actionFound = false;
+
+    auto menuBar = ui->menubar;
+    QVERIFY2(menuBar != nullptr, qPrintable(QString::fromUtf8(u8"menuBar not found")));
+    if (menuBar != nullptr)
+    {
+        auto actions = menuBar->actions();
+        for (auto action : actions)
+        {
+            if (action->objectName() == QString::fromUtf8("load"))
+            {
+                actionFound = true;
+                action->trigger();
+                break;
+            }
+        }
+    }
+
+    spyLoadAction.wait();
+
+    bool stepPossible = mw.ui->stepForwardButton->isEnabled();
+
+    QVERIFY2(stepNotPossible, qPrintable(QString::fromUtf8(u8"incorrect state (enabled) for stepForwardButton")));
+    QVERIFY2(stepPossible, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for stepForwardButton")));
 }
 
 #endif // _USE_LONG_TEST

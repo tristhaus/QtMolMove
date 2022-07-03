@@ -16,9 +16,9 @@
  *
  */
 
-#include "MemoryRepository.h"
+#include "FixedRepository.h"
 
-std::shared_ptr<Backend::Trajectory> Backend::MemoryRepository::Load(std::string)
+std::shared_ptr<Backend::Trajectory> Backend::FixedRepository::Load(std::string)
 {
     Backend::Viewport viewport(-10.0, 10.0, -10.0, 10.0);
 

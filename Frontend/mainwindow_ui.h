@@ -53,6 +53,7 @@ protected:
 private:
     QMenuBar * menubar{};
     QAction * loadMenuAction{};
+    QAction * loadFixedMenuAction{};
     QAction * aboutMenuAction{};
 
     QWidget * centralwidget{};
@@ -144,9 +145,13 @@ public:
         menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 600, 21));
 
-        auto openGameMenuActionLabel = QCoreApplication::translate("MainWindow", "Load ...", nullptr);
-        loadMenuAction = menubar->addAction(openGameMenuActionLabel);
+        auto loadMenuActionLabel = QCoreApplication::translate("MainWindow", "Load ...", nullptr);
+        loadMenuAction = menubar->addAction(loadMenuActionLabel);
         loadMenuAction->setObjectName(QString::fromUtf8("load"));
+
+        auto loadFixedMenuActionLabel = QCoreApplication::translate("MainWindow", "Load Fixed ...", nullptr);
+        loadFixedMenuAction = menubar->addAction(loadFixedMenuActionLabel);
+        loadFixedMenuAction->setObjectName(QString::fromUtf8("loadFixed"));
 
         //: Arg 1 is a placeholder for the program name
         auto aboutActionLabelTemplate = QCoreApplication::translate("MainWindow", "About %1", nullptr);

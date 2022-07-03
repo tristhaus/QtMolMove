@@ -25,11 +25,13 @@
 MainWindow::MainWindow(std::shared_ptr<Backend::Repository> repository, QWidget *parent)
     : QMainWindow(parent),
       repository(std::move(repository)),
+      fixedRepository(std::make_shared<Backend::FixedRepository>()),
       ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
     connect(ui->loadMenuAction, &QAction::triggered, this, &MainWindow::OnLoadTriggered);
+    connect(ui->loadFixedMenuAction, &QAction::triggered, this, &MainWindow::OnLoadFixedTriggered);
     connect(ui->aboutMenuAction, &QAction::triggered, this, &MainWindow::OnAboutTriggered);
     connect(ui->playPauseButton, &QAbstractButton::pressed, this, &MainWindow::OnPlayPausePressed);
     connect(ui->stopButton, &QAbstractButton::pressed, this, &MainWindow::OnStopPressed);
@@ -179,7 +181,53 @@ void MainWindow::ShowNotImplementedBox()
 
 void MainWindow::LoadTrajectory()
 {
-    this->trajectory = this->repository->Load("dummy");
+    Resetter resetter([&](){ this->presetFilename.clear(); });
+
+    auto list = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+    auto folder = QString(list.first());
+
+    const QString FileFilter = QString::fromUtf8(u8"(*.json)");
+
+    QString fileName = !this->presetFilename.isEmpty() ? this->presetFilename : QFileDialog::getOpenFileName(this, u8"", folder, FileFilter, nullptr, QFileDialog::Options());
+
+    if(fileName.isEmpty())
+    {
+        return;
+    }
+
+    try
+    {
+        auto filenameBytes = fileName.toUtf8();
+        std::string filename(filenameBytes.constData(), filenameBytes.length());
+        this->trajectory = this->repository->Load(filename);
+        this->ellipses.clear();
+        this->index = 0U;
+        this->ui->plot->clearItems();
+    }
+    catch(std::exception & exception)
+    {
+        QString messageBoxTitle = QCoreApplication::translate("MainWindow", "Error", nullptr);
+        QString messageBoxTextTemplate = QCoreApplication::translate("MainWindow", "On attempted load, error occurred: %1", nullptr);
+        QString errorMesssage = QString::fromUtf8(exception.what());
+        QString messageBoxText = messageBoxTextTemplate.arg(errorMesssage);
+
+        auto errorBox = std::make_unique<QMessageBox>(
+                    QMessageBox::Icon::Critical,
+                    messageBoxTitle,
+                    messageBoxText);
+
+        errorBox->exec();
+
+        errorBox.reset();
+    }
+
+    this->Update();
+}
+
+void MainWindow::LoadFixedTrajectory()
+{
+    this->trajectory = this->fixedRepository->Load("dummy");
+    this->ellipses.clear();
     this->index = 0U;
     this->ui->plot->clearItems();
 
@@ -209,6 +257,11 @@ void MainWindow::ForwardOneFrame()
 void MainWindow::OnLoadTriggered()
 {
     this->LoadTrajectory();
+}
+
+void MainWindow::OnLoadFixedTriggered()
+{
+    this->LoadFixedTrajectory();
 }
 
 void MainWindow::OnAboutTriggered()

@@ -16,25 +16,14 @@
  *
  */
 
-#ifndef MEMORYREPOSITORY_H
-#define MEMORYREPOSITORY_H
+#include "MemoryRepository.h"
 
-#include "Repository.h"
-namespace Backend
+std::shared_ptr<Backend::Trajectory> TestHelper::MemoryRepository::Load(std::string identifier)
 {
-    /**
-     * @brief The MemoryRepository class is a fake repo in that it only produces one fixed trajectory.
-     */
-    class MemoryRepository final : public Repository
-    {
-    public:
-        MemoryRepository() = default;
-
-        /**
-         * @reimp
-         */
-        std::shared_ptr<Trajectory> Load(std::string) override;
-    };
+    return this->store[identifier];
 }
 
-#endif // MEMORYREPOSITORY_H
+void TestHelper::MemoryRepository::Save(std::string identifier, std::shared_ptr<Backend::Trajectory> trajectory)
+{
+    this->store[identifier] = std::move(trajectory);
+}

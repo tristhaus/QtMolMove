@@ -16,13 +16,30 @@
  *
  */
 
-#include <gtest/gtest.h>
+#ifndef MEMORYREPOSITORY_H
+#define MEMORYREPOSITORY_H
 
-#include "tst_deserializer.h"
-#include "tst_diskrepository.h"
+#include <map>
 
-int main(int argc, char *argv[])
+#include "../Backend/Repository.h"
+
+namespace TestHelper
 {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    class MemoryRepository final : public Backend::Repository
+    {
+    private:
+        std::map<std::string, std::shared_ptr<Backend::Trajectory>> store;
+
+    public:
+        MemoryRepository() = default;
+
+        /**
+         * @reimp
+         */
+        std::shared_ptr<Backend::Trajectory> Load(std::string identifier) override;
+
+        void Save(std::string identifier, std::shared_ptr<Backend::Trajectory> trajectory);
+    };
 }
+
+#endif // MEMORYREPOSITORY_H

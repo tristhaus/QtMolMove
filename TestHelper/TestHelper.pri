@@ -17,7 +17,9 @@
 #
 
 SOURCES += \
-    $$PWD/TestRepository.cpp
+    $$PWD/TestRepository.cpp \
+    $$PWD/MemoryRepository.cpp
 
 HEADERS += \
-    $$PWD/TestRepository.h
+    $$PWD/TestRepository.h \
+    $$PWD/MemoryRepository.h

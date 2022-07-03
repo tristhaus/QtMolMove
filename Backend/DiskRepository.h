@@ -16,13 +16,31 @@
  *
  */
 
-#include <gtest/gtest.h>
+#include "Deserializer.h"
+#include "Repository.h"
 
-#include "tst_deserializer.h"
-#include "tst_diskrepository.h"
+#ifndef DISKREPOSITORY_H
+#define DISKREPOSITORY_H
 
-int main(int argc, char *argv[])
+namespace Backend
 {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    /*!
+     * \brief The DiskRepository class allows to deserialize a trajectory from disk.
+     *        The identifier is thus a file path.
+     */
+    class DiskRepository final : public Repository
+    {
+    public:
+        /*!
+         * \brief Initializes a new instance.
+         */
+        DiskRepository() = default;
+
+        /*!
+         * \reimp
+         */
+        std::shared_ptr<Trajectory> Load(std::string identifier) override;
+    };
 }
+
+#endif // DISKREPOSITORY_H

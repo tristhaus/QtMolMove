@@ -23,7 +23,7 @@
 #include <QMessageBox>
 #include <atomic>
 
-#include "../Backend/MemoryRepository.h"
+#include "../Backend/FixedRepository.h"
 #include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
@@ -40,6 +40,7 @@ class MainWindow : public QMainWindow //NOLINT (cppcoreguidelines-special-member
 
 private:
     std::shared_ptr<Backend::Repository> repository;
+    std::shared_ptr<Backend::Repository> fixedRepository;
     Ui::MainWindow *ui;
 
     std::atomic_uint index = 0;
@@ -49,6 +50,11 @@ private:
     std::vector<QColor> colors;
     std::vector<QCPItemEllipse*> ellipses;
 
+    /*!
+     * \brief presetFilename allows to set a filename and
+     *        thus circumvent the file dialog, e.g. for testing.
+     */
+    QString presetFilename;
 public:
     explicit MainWindow(std::shared_ptr<Backend::Repository> repository, QWidget *parent = nullptr);
     ~MainWindow() override;
@@ -58,6 +64,7 @@ private:
     void Update();
     void UpdatePlot();
     void LoadTrajectory();
+    void LoadFixedTrajectory();
     void ShowNotImplementedBox();
     void ShowAboutDialog();
     void BackOneFrame();
@@ -66,11 +73,40 @@ private:
 
 private slots:
     void OnLoadTriggered();
+    void OnLoadFixedTriggered();
     void OnAboutTriggered();
     void OnPlayPausePressed();
     void OnStopPressed();
     void OnStepBackPressed();
     void OnStepForwardPressed();
+
+private:
+    /*!
+     * \brief The Resetter class executes the contained action on destruction.
+     *        The usual application is to reset something.
+     */
+    class Resetter
+    {
+    private:
+        std::function<void()> action;
+
+    public:
+        /*!
+         * \brief Initializes a new instance holding the supplied action.
+         * \param action The action to store and execute on destruction.
+         */
+        explicit Resetter(std::function<void()> action) : action(std::move(action))
+        {
+        }
+        ~Resetter()
+        {
+            this->action();
+        }
+        Resetter(const Resetter&) = delete;
+        Resetter(Resetter&&) = delete;
+        Resetter& operator=(const Resetter&) = delete;
+        Resetter& operator=(Resetter&&) = delete;
+    };
 };
 
 #endif // MAINWINDOW_H

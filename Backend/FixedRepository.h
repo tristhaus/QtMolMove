@@ -16,13 +16,25 @@
  *
  */
 
-#include <gtest/gtest.h>
+#ifndef FIXEDREPOSITORY_H
+#define FIXEDREPOSITORY_H
 
-#include "tst_deserializer.h"
-#include "tst_diskrepository.h"
-
-int main(int argc, char *argv[])
+#include "Repository.h"
+namespace Backend
 {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    /**
+     * @brief The FixedRepository class is a fake repo in that it only produces one fixed trajectory.
+     */
+    class FixedRepository final : public Repository
+    {
+    public:
+        FixedRepository() = default;
+
+        /**
+         * @reimp
+         */
+        std::shared_ptr<Trajectory> Load(std::string) override;
+    };
 }
+
+#endif // FIXEDREPOSITORY_H

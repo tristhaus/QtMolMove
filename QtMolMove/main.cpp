@@ -17,7 +17,7 @@
  */
 
 #include "../Frontend/mainwindow.h"
-#include "../Backend/MemoryRepository.h"
+#include "../Backend/DiskRepository.h"
 
 #include <QApplication>
 #include <QLocale>
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
     QApplication::installTranslator(&translator);
 
-    MainWindow w(std::make_shared<Backend::MemoryRepository>());
+    MainWindow w(std::make_shared<Backend::DiskRepository>());
     w.show();
     return QApplication::exec();
 }

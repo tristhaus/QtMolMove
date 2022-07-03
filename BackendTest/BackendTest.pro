@@ -29,7 +29,8 @@ CONFIG += console c++11 thread
 CONFIG -= app_bundle
 
 HEADERS += \
-    tst_deserializer.h
+    tst_deserializer.h \
+    tst_diskrepository.h
 
 SOURCES += \
         main.cpp

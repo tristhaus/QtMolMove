@@ -25,66 +25,165 @@ namespace Backend
 {
     using unit = double;
 
+    /*!
+     * \brief The Viewport class defines the visible part of the coordinate system
+     *        to be used to display the trajectory.
+     */
     class Viewport
     {
     public:
+        /*!
+         * \brief minX The lowest visible x-value.
+         */
         const unit minX;
+
+        /*!
+         * \brief maxX The highest visible x-value.
+         */
         const unit maxX;
+
+        /*!
+         * \brief minY The lowest visible y-value.
+         */
         const unit minY;
+
+        /*!
+         * \brief maxY The highest visible y-value.
+         */
         const unit maxY;
+
+        /*!
+         * \brief Initializes a new instance from the given limits.
+         * \param minX The lowest visible x-value.
+         * \param maxX The highest visible x-value.
+         * \param minY The lowest visible y-value.
+         * \param maxY The highest visible y-value.
+         */
         explicit Viewport(unit minX, unit maxX, unit minY, unit maxY)
             : minX(minX),
               maxX(maxX),
-          minY(minY),
-          maxY(maxY)
+              minY(minY),
+              maxY(maxY)
         {}
     };
 
+    /*!
+     * \brief The Particle class collects properties of an individual particle.
+     */
     class Particle
     {
     public:
+        /*!
+         * \brief id Describes the identity of the particle.
+         */
         const unsigned int id;
+
+        /*!
+         * \brief Initializes a new instance.
+         * \param id The numeric identity of the particle.
+         */
         explicit Particle(unsigned int id)
             : id(id)
         {}
     };
 
+    /*!
+     * \brief The Coordinate class wraps the 2D coordinates of a particle.
+     */
     class Coordinate
     {
     public:
+        /*!
+         * \brief x The x-coordinate of the particle.
+         */
         const unit x;
+
+        /*!
+         * \brief y The y-coordinate of the particle.
+         */
         const unit y;
+
+        /*!
+         * \brief Initializes a new instance.
+         * \param x The x-coordinate of the particle.
+         * \param y The y-coordinate of the particle.
+         */
         explicit Coordinate(unit x, unit y)
             : x(x),
               y(y)
         {}
     };
 
+    /*!
+     * \brief The Frame class collects the coordinates of all present particles at one point in time.
+     */
     class Frame
     {
     public:
+        /*!
+         * \brief coordinates The list of coordinates.
+         */
         const std::vector<Coordinate> coordinates;
+
+        /*!
+         * \brief Initializes a new instance.
+         * \param coordinates The list of coordinates.
+         */
         explicit Frame(std::vector<Coordinate> coordinates)
             : coordinates(std::move(coordinates))
         {}
     };
 
+    /*!
+     * \brief The Trajectory class collects the particles and their coordinates
+     *        along with other relevant information for the display.
+     */
     class Trajectory
     {
     private:
-        unsigned int particleCount;
         unit particleSize;
         Viewport viewport;
         std::vector<Particle> particles;
         std::vector<Frame> frames;
 
     public:
-        explicit Trajectory(unsigned int particleCount, unit particleSize, Viewport viewport, std::vector<Particle> particles, std::vector<Frame> frames);
+        /*!
+         * \brief Initializes a new instance.
+         * \param particleSize The size of each of the particles.
+         * \param viewport The relevant viewing window.
+         * \param particles The list of particles.
+         * \param frames The list of frames.
+         */
+        explicit Trajectory(unit particleSize, Viewport viewport, std::vector<Particle> particles, std::vector<Frame> frames);
 
+        /*!
+         * \brief ParticleCount Gets the number of particles.
+         * \return The number of particles.
+         */
         [[nodiscard]] unsigned int ParticleCount() const;
+
+        /*!
+         * \brief ParticleSize Gets the size of each of the particles.
+         * \return The size of each of the particles.
+         */
         [[nodiscard]] unit ParticleSize() const;
+
+        /*!
+         * \brief Viewport Gets the relevant viewing window.
+         * \return The relevant viewing window.
+         */
         [[nodiscard]] Viewport Viewport() const;
+
+        /*!
+         * \brief Particles Gets the list of particles.
+         * \return The list of particles.
+         */
         [[nodiscard]] std::vector<Particle> Particles() const;
+
+        /*!
+         * \brief Frames Gets the list of frames.
+         * \return The list of frames.
+         */
         [[nodiscard]] std::vector<Frame> Frames() const;
     };
 }

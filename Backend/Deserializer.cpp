@@ -176,7 +176,7 @@ std::shared_ptr<Backend::Trajectory> Backend::Deserializer::Deserialize(std::ist
     auto particles = ParseParticles(document[KeyParticles]);
     auto frames = ParseFrames(document[KeyFrames], static_cast<const unsigned int>(particles.size()));
 
-    return std::make_shared<Trajectory>(static_cast<unsigned int>(particles.size()), size, viewport, particles, frames);
+    return std::make_shared<Trajectory>(size, viewport, particles, frames);
 }
 
 Backend::unit Backend::Deserializer::ParseSize(rapidjson::GenericValue<rapidjson::UTF8<char>>& sizeValue)

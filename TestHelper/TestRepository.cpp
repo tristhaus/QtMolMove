@@ -59,5 +59,5 @@ std::shared_ptr<Backend::Trajectory> TestHelper::TestRepository::Load(std::strin
         }
     }
 
-    return std::make_shared<Backend::Trajectory>(2, 1.25, viewport, particles, frames);
+    return std::make_shared<Backend::Trajectory>(1.25, viewport, particles, frames);
 }

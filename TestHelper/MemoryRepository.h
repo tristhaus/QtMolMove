@@ -25,19 +25,30 @@
 
 namespace TestHelper
 {
+    /*!
+     * \brief The MemoryRepository class provides in memory storage of a trajectory.
+     */
     class MemoryRepository final : public Backend::Repository
     {
     private:
         std::map<std::string, std::shared_ptr<Backend::Trajectory>> store;
 
     public:
+        /*!
+         * Initializes a new instance.
+         */
         MemoryRepository() = default;
 
-        /**
+        /*!
          * @reimp
          */
         std::shared_ptr<Backend::Trajectory> Load(std::string identifier) override;
 
+        /*!
+         * \brief Saves a trajectory to main memory.
+         * \param identifier The unique identifier.
+         * \param trajectory The trajectory to store.
+         */
         void Save(std::string identifier, std::shared_ptr<Backend::Trajectory> trajectory);
     };
 }

@@ -26,9 +26,15 @@
 
 namespace Backend
 {
+    /*!
+     * \brief The Repository interface provides access to trajectories.
+     */
     class Repository
     {
     public:
+        /*!
+         * \brief Initializes a new instance.
+         */
         Repository() = default;
         Repository(const Repository&) = delete;
         Repository(Repository&&) = delete;
@@ -36,6 +42,11 @@ namespace Backend
         Repository& operator=(Repository&&) = delete;
         virtual ~Repository() = default;
 
+        /*!
+         * \brief Loads a trajectory from the persistence medium.
+         * \param identifier The unique identifier, e.g. a file path or a GUID.
+         * \return The corresponding trajectory.
+         */
         virtual std::shared_ptr<Trajectory> Load(std::string identifier) = 0;
     };
 }

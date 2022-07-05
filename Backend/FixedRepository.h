@@ -22,15 +22,18 @@
 #include "Repository.h"
 namespace Backend
 {
-    /**
+    /*!
      * @brief The FixedRepository class is a fake repo in that it only produces one fixed trajectory.
      */
     class FixedRepository final : public Repository
     {
     public:
+        /*!
+         * \brief Initializes a new instance.
+         */
         FixedRepository() = default;
 
-        /**
+        /*!
          * @reimp
          */
         std::shared_ptr<Trajectory> Load(std::string) override;

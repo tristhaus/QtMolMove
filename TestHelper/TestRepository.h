@@ -23,7 +23,7 @@
 
 namespace TestHelper
 {
-    /**
+    /*!
      * @brief The TestRepository class is a fake repo
               in that it only produces one fixed trajectory
               with the maximum number of steps set.
@@ -33,9 +33,13 @@ namespace TestHelper
         unsigned int numberFrames;
 
     public:
+        /*!
+         * \brief Initializes a new instance.
+         * \param numberFrames The number of frames in the trajectory provided by the Load method.
+         */
         explicit TestRepository(unsigned int numberFrames);
 
-        /**
+        /*!
          * @reimp
          */
         std::shared_ptr<Backend::Trajectory> Load(std::string) override;

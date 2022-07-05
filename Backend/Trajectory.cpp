@@ -21,13 +21,11 @@
 #include <utility>
 
 Backend::Trajectory::Trajectory(
-        unsigned int particleCount,
         Backend::unit particleSize,
         Backend::Viewport viewport,
         std::vector<Particle> particles,
         std::vector<Frame> frames)
-    : particleCount(particleCount),
-      particleSize(particleSize),
+    : particleSize(particleSize),
       viewport(viewport),
       particles(std::move(particles)),
       frames(std::move(frames))
@@ -36,7 +34,7 @@ Backend::Trajectory::Trajectory(
 
 unsigned int Backend::Trajectory::ParticleCount() const
 {
-    return this->particleCount;
+    return static_cast<unsigned int>(this->particles.size());
 }
 
 Backend::unit Backend::Trajectory::ParticleSize() const

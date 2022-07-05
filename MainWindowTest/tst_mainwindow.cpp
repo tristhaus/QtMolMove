@@ -331,7 +331,7 @@ void FrontendTest::LoadActionShallLoadFromRepository()
             Backend::Frame(std::vector<Backend::Coordinate> { Backend::Coordinate( 6.0, 4.0), Backend::Coordinate(-6.0, -4.0) })
     };
 
-    auto trajectory = std::make_shared<Backend::Trajectory>(2, 1.25, viewport, particles, frames);
+    auto trajectory = std::make_shared<Backend::Trajectory>(1.25, viewport, particles, frames);
 
     auto repository = std::make_shared<TestHelper::MemoryRepository>();
 

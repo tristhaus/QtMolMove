@@ -36,5 +36,5 @@ std::shared_ptr<Backend::Trajectory> Backend::FixedRepository::Load(std::string)
             Backend::Frame(std::vector<Backend::Coordinate> { Backend::Coordinate( 6.0, 4.0), Backend::Coordinate(-6.0, -4.0) })
     };
 
-    return std::make_shared<Backend::Trajectory>(2, 1.25, viewport, particles, frames);
+    return std::make_shared<Backend::Trajectory>(1.25, viewport, particles, frames);
 }

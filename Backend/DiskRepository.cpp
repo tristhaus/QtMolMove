@@ -23,7 +23,7 @@
 std::shared_ptr<Backend::Trajectory> Backend::DiskRepository::Load(std::string identifier)
 {
     std::filesystem::path path = std::filesystem::u8path(identifier);
-    if(!std::filesystem::exists(path))
+    if (!std::filesystem::exists(path))
     {
         throw std::runtime_error((std::string(u8"file \"") + path.string() + std::string(u8"\" does not exist")).c_str());
     }
@@ -39,7 +39,7 @@ std::shared_ptr<Backend::Trajectory> Backend::DiskRepository::Load(std::string i
         throw std::runtime_error((std::string(u8"when opening \"") + path.string() + std::string(u8"\" exception: \"") + exception.what() + std::string(u8"\"")).c_str());
     }
 
-    if(!(ifs.is_open() && ifs.good()))
+    if (!(ifs.is_open() && ifs.good()))
     {
         throw std::runtime_error((std::string(u8"unable to open stream \"") + path.string() + std::string(u8"\" for reading")).c_str());
     }

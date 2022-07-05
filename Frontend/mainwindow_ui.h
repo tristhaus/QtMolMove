@@ -129,6 +129,7 @@ public:
         retranslateUi(MainWindow);
     } // setupUi
 
+private:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "QtMolMove", nullptr));
@@ -141,7 +142,7 @@ public:
 
     void setupMenuBar(QMainWindow * MainWindow)
     {
-        menubar = new QMenuBar(MainWindow);
+        menubar = new QMenuBar(MainWindow); //NOLINT(cppcoreguidelines-owning-memory)
         menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 600, 21));
 

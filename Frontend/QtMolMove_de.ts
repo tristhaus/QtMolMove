@@ -4,38 +4,38 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="mainwindow_ui.h" line="136"/>
+        <location filename="mainwindow_ui.h" line="137"/>
         <source>Play/Pause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow_ui.h" line="137"/>
+        <location filename="mainwindow_ui.h" line="138"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow_ui.h" line="138"/>
+        <location filename="mainwindow_ui.h" line="139"/>
         <source>Step Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow_ui.h" line="139"/>
+        <location filename="mainwindow_ui.h" line="140"/>
         <source>Step Forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow_ui.h" line="148"/>
+        <location filename="mainwindow_ui.h" line="149"/>
         <source>Load ...</source>
         <translation>Laden ...</translation>
     </message>
     <message>
-        <location filename="mainwindow_ui.h" line="152"/>
+        <location filename="mainwindow_ui.h" line="153"/>
         <source>Load Fixed ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="149"/>
-        <location filename="mainwindow_ui.h" line="157"/>
+        <location filename="mainwindow_ui.h" line="158"/>
         <source>About %1</source>
         <extracomment>Arg 1 is a placeholder for the program name</extracomment>
         <translation>Über %1</translation>
@@ -43,8 +43,8 @@
     <message>
         <location filename="mainwindow.cpp" line="150"/>
         <location filename="mainwindow.cpp" line="154"/>
-        <location filename="mainwindow_ui.h" line="134"/>
-        <location filename="mainwindow_ui.h" line="158"/>
+        <location filename="mainwindow_ui.h" line="135"/>
+        <location filename="mainwindow_ui.h" line="159"/>
         <source>QtMolMove</source>
         <translation>QtMolMove</translation>
     </message>

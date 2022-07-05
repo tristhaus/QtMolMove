@@ -47,7 +47,7 @@ TEST(BackendTest, DiskRepositoryShallLoadGame) //NOLINT (cert-err58-cpp, cppcore
     auto result = repo.Load(id);
 
     // Assert
-    if(std::filesystem::exists(tempFile) && !std::filesystem::is_directory(tempFile))
+    if (std::filesystem::exists(tempFile) && !std::filesystem::is_directory(tempFile))
     {
         std::filesystem::remove(tempFile);
     }

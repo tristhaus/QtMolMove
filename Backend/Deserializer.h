@@ -29,6 +29,10 @@
 
 namespace Backend
 {
+    /*!
+     * \brief The Deserializer class deserializes a certain JSON format into a trajectory.
+     *        The class is static.
+     */
     class Deserializer
     {
     private:
@@ -46,12 +50,17 @@ namespace Backend
         constexpr static const char * const KeyY = u8"Y";
     public:
         Deserializer() = delete;
+        /*!
+         * \brief Deserializes a given stream containing a JSON per schema into a trajectory.
+         * \param is The input stream.
+         * \return The corresponding trajectory.
+         */
         static std::shared_ptr<Trajectory> Deserialize(std::istream & is);
     private:
-        static unit ParseSize(rapidjson::GenericValue<rapidjson::UTF8<char>> & sizeValue);
-        static Viewport ParseViewport(rapidjson::GenericValue<rapidjson::UTF8<char>> & viewportValue);
-        static std::vector<Particle> ParseParticles(rapidjson::GenericValue<rapidjson::UTF8<char>> & particlesValue);
-        static std::vector<Frame> ParseFrames(rapidjson::GenericValue<rapidjson::UTF8<char>> & framesValue, const unsigned int & particles);
+        static unit ParseSize(rapidjson::GenericValue<rapidjson::UTF8<char>> & sizeValue); // NOLINT(google-runtime-references)
+        static Viewport ParseViewport(rapidjson::GenericValue<rapidjson::UTF8<char>> & viewportValue); // NOLINT(google-runtime-references)
+        static std::vector<Particle> ParseParticles(rapidjson::GenericValue<rapidjson::UTF8<char>> & particlesValue); // NOLINT(google-runtime-references)
+        static std::vector<Frame> ParseFrames(rapidjson::GenericValue<rapidjson::UTF8<char>> & framesValue, const unsigned int & particles); // NOLINT(google-runtime-references)
     };
 }
 

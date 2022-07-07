@@ -43,7 +43,14 @@ private:
     std::shared_ptr<Backend::Repository> fixedRepository;
     Ui::MainWindow *ui;
 
-    std::atomic_uint index = 0;
+    std::atomic_uint index;
+    std::atomic_bool isPlaying;
+    QTimer playTimer;
+
+    /*!
+     * \brief The time between frames in milliseconds.
+     */
+    std::atomic_int playInterval;
 
     std::unique_ptr<QMessageBox> aboutMessageBox;
     std::shared_ptr<Backend::Trajectory> trajectory;
@@ -67,11 +74,15 @@ private:
     void LoadFixedTrajectory();
     void ShowNotImplementedBox();
     void ShowAboutDialog();
+    void StartPlaying();
+    void StopPlaying();
+    void ResetToBeginning();
     void BackOneFrame();
     void ForwardOneFrame();
     QColor GetColorFor(int id);
 
 private slots:
+    void OnPlayTimerTimeout();
     void OnLoadTriggered();
     void OnLoadFixedTriggered();
     void OnAboutTriggered();

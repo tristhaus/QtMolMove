@@ -26,9 +26,17 @@ MainWindow::MainWindow(std::shared_ptr<Backend::Repository> repository, QWidget 
     : QMainWindow(parent),
       repository(std::move(repository)),
       fixedRepository(std::make_shared<Backend::FixedRepository>()),
-      ui(new Ui::MainWindow)
+      ui(new Ui::MainWindow),
+      index(0),
+      isPlaying(false),
+      playTimer(QTimer(this)),
+      playInterval(100)
 {
     ui->setupUi(this);
+
+    connect(&(this->playTimer), &QTimer::timeout, this, &MainWindow::OnPlayTimerTimeout);
+    this->playTimer.setSingleShot(false);
+    this->playTimer.setInterval(this->playInterval);
 
     connect(ui->loadMenuAction, &QAction::triggered, this, &MainWindow::OnLoadTriggered);
     connect(ui->loadFixedMenuAction, &QAction::triggered, this, &MainWindow::OnLoadFixedTriggered);
@@ -88,8 +96,13 @@ void MainWindow::Update()
 
     this->ui->playPauseButton->setEnabled(hasMultiframeTrajectory && this->index + 1 < this->trajectory->Frames().size());
     this->ui->stopButton->setEnabled(hasMultiframeTrajectory && this->index > 0);
-    this->ui->stepBackButton->setEnabled(hasMultiframeTrajectory && this->index > 0);
-    this->ui->stepForwardButton->setEnabled(hasMultiframeTrajectory && this->index + 1 < this->trajectory->Frames().size());
+    this->ui->stepBackButton->setEnabled(!this->isPlaying && hasMultiframeTrajectory && this->index > 0);
+    this->ui->stepForwardButton->setEnabled(!this->isPlaying && hasMultiframeTrajectory && this->index + 1 < this->trajectory->Frames().size());
+
+    this->ui->playPauseButton->setText(
+                this->isPlaying
+                ? QCoreApplication::translate("MainWindow", "Pause", nullptr)
+                : QCoreApplication::translate("MainWindow", "Play", nullptr));
 
     this->UpdatePlot();
 }
@@ -166,7 +179,35 @@ void MainWindow::ShowAboutDialog()
     this->aboutMessageBox.reset();
 }
 
-void MainWindow::ShowNotImplementedBox()
+void MainWindow::StartPlaying()
+{
+    this->isPlaying = true;
+    this->playTimer.start();
+
+    this->ForwardOneFrame();
+}
+
+void MainWindow::StopPlaying()
+{
+    this->isPlaying = false;
+    this->playTimer.stop();
+
+    this->Update();
+}
+
+void MainWindow::ResetToBeginning()
+{
+    if (this->isPlaying)
+    {
+        this->StopPlaying();
+    }
+
+    this->index = 0;
+
+    this->Update();
+}
+
+void MainWindow::ShowNotImplementedBox() // todo : obsolete
 {
     QString messageBoxTitle = QString::fromUtf8("Not implemented");
     QString messageBoxText = QString::fromUtf8("Feature not yet implemented");
@@ -190,7 +231,7 @@ void MainWindow::LoadTrajectory()
 
     QString fileName = !this->presetFilename.isEmpty() ? this->presetFilename : QFileDialog::getOpenFileName(this, u8"", folder, FileFilter, nullptr, QFileDialog::Options());
 
-    if(fileName.isEmpty())
+    if (fileName.isEmpty())
     {
         return;
     }
@@ -254,6 +295,16 @@ void MainWindow::ForwardOneFrame()
     }
 }
 
+void MainWindow::OnPlayTimerTimeout()
+{
+    this->ForwardOneFrame();
+
+    if (this->index + 1 >= this->trajectory->Frames().size())
+    {
+        this->StopPlaying();
+    }
+}
+
 void MainWindow::OnLoadTriggered()
 {
     this->LoadTrajectory();
@@ -271,12 +322,12 @@ void MainWindow::OnAboutTriggered()
 
 void MainWindow::OnPlayPausePressed()
 {
-    this->ShowNotImplementedBox();
+    this->isPlaying ? this->StopPlaying() : this->StartPlaying();
 }
 
 void MainWindow::OnStopPressed()
 {
-    this->ShowNotImplementedBox();
+    this->ResetToBeginning();
 }
 
 void MainWindow::OnStepBackPressed()

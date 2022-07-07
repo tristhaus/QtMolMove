@@ -47,6 +47,10 @@ private slots:
     void OneFrameTrajectoryShallDisableAllButtons();
     void ThreeFrameTrajectoryShallTransitionStates();
     void LoadActionShallLoadFromRepository();
+    void PlayShallRunToEnd();
+    void PlayAndPauseShallYieldCorrectState();
+    void PlayPausePlayShallRunToEnd();
+    void PlayAndStopShallYieldCorrectState();
 #endif // _USE_LONG_TEST
 };
 
@@ -131,7 +135,7 @@ void FrontendTest::AboutButtonShallTriggerDialogAndOKShallClose()
         }
     }
 
-    spyAboutAction.wait();
+    spyAboutAction.wait(100);
 
     // Assert
     QVERIFY2(actionFound, qPrintable(QString::fromUtf8(u8"no action found")));
@@ -172,7 +176,7 @@ void FrontendTest::OneFrameTrajectoryShallDisableAllButtons()
         }
     }
 
-    spyLoadAction.wait();
+    spyLoadAction.wait(100);
 
     bool hasItemsAfterLoading = ui->plot->itemCount() > 0;
 
@@ -225,7 +229,7 @@ void FrontendTest::ThreeFrameTrajectoryShallTransitionStates()
         }
     }
 
-    spyLoadAction.wait();
+    spyLoadAction.wait(100);
 
     bool hasItemsAfterLoading = ui->plot->itemCount() > 0;
 
@@ -368,12 +372,223 @@ void FrontendTest::LoadActionShallLoadFromRepository()
         }
     }
 
-    spyLoadAction.wait();
+    spyLoadAction.wait(100);
 
     bool stepPossible = mw.ui->stepForwardButton->isEnabled();
 
     QVERIFY2(stepNotPossible, qPrintable(QString::fromUtf8(u8"incorrect state (enabled) for stepForwardButton")));
     QVERIFY2(stepPossible, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for stepForwardButton")));
+}
+
+void FrontendTest::PlayShallRunToEnd()
+{
+    // Arrange
+    MainWindow mw(std::make_shared<TestHelper::TestRepository>(5));
+    mw.playInterval = 50;
+    auto ui = mw.ui;
+    mw.presetFilename = QString::fromUtf8("does not matter");
+
+    // spy needed such that events actually happen
+    QSignalSpy spyLoadAction(ui->loadMenuAction, &QAction::triggered);
+    QSignalSpy spyPlayPauseButton(ui->playPauseButton, &QAbstractButton::pressed);
+
+    // Act
+    auto menuBar = ui->menubar;
+    QVERIFY2(menuBar != nullptr, qPrintable(QString::fromUtf8(u8"menuBar not found")));
+    if (menuBar != nullptr)
+    {
+        auto actions = menuBar->actions();
+        for (auto action : actions)
+        {
+            if (action->objectName() == QString::fromUtf8("load"))
+            {
+                action->trigger();
+                break;
+            }
+        }
+    }
+
+    spyLoadAction.wait(100);
+
+    QTest::mouseClick(mw.ui->playPauseButton, Qt::LeftButton);
+    spyPlayPauseButton.wait();
+
+    // Assert
+    {
+        bool playPauseButtonDisabled = !ui->playPauseButton->isEnabled();
+        bool stopButtonEnabled = ui->stopButton->isEnabled();
+        bool stepBackButtonEnabled = ui->stepBackButton->isEnabled();
+        bool stepForwardButtonDisabled = !ui->stepForwardButton->isEnabled();
+
+        // Assert
+        QVERIFY2(playPauseButtonDisabled, qPrintable(QString::fromUtf8(u8"incorrect state (enabled) for playPauseButton")));
+        QVERIFY2(stopButtonEnabled, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for stopButton")));
+        QVERIFY2(stepBackButtonEnabled, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for stepBackButton")));
+        QVERIFY2(stepForwardButtonDisabled, qPrintable(QString::fromUtf8(u8"incorrect state (enabled) for stepForwardButton")));
+    }
+}
+
+void FrontendTest::PlayAndPauseShallYieldCorrectState()
+{
+    // Arrange
+    MainWindow mw(std::make_shared<TestHelper::TestRepository>(20));
+    mw.playInterval = 50;
+    auto ui = mw.ui;
+    mw.presetFilename = QString::fromUtf8("does not matter");
+
+    // spy needed such that events actually happen
+    QSignalSpy spyLoadAction(ui->loadMenuAction, &QAction::triggered);
+    QSignalSpy spyPlayPauseButton(ui->playPauseButton, &QAbstractButton::pressed);
+
+    // Act
+    auto menuBar = ui->menubar;
+    QVERIFY2(menuBar != nullptr, qPrintable(QString::fromUtf8(u8"menuBar not found")));
+    if (menuBar != nullptr)
+    {
+        auto actions = menuBar->actions();
+        for (auto action : actions)
+        {
+            if (action->objectName() == QString::fromUtf8("load"))
+            {
+                action->trigger();
+                break;
+            }
+        }
+    }
+
+    spyLoadAction.wait(100);
+
+    QTest::mouseClick(mw.ui->playPauseButton, Qt::LeftButton);
+    spyPlayPauseButton.wait(100);
+
+    QThread::msleep(500);
+
+    QTest::mouseClick(mw.ui->playPauseButton, Qt::LeftButton);
+    spyPlayPauseButton.wait(100);
+
+    // Assert
+    {
+        bool playPauseButtonEnabled = ui->playPauseButton->isEnabled();
+        bool stopButtonEnabled = ui->stopButton->isEnabled();
+        bool stepBackButtonEnabled = ui->stepBackButton->isEnabled();
+        bool stepForwardButtonEnabled = ui->stepForwardButton->isEnabled();
+
+        // Assert
+        QVERIFY2(playPauseButtonEnabled, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for playPauseButton")));
+        QVERIFY2(stopButtonEnabled, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for stopButton")));
+        QVERIFY2(stepBackButtonEnabled, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for stepBackButton")));
+        QVERIFY2(stepForwardButtonEnabled, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for stepForwardButton")));
+    }
+}
+
+void FrontendTest::PlayPausePlayShallRunToEnd()
+{
+    // Arrange
+    MainWindow mw(std::make_shared<TestHelper::TestRepository>(20));
+    mw.playInterval = 50;
+    auto ui = mw.ui;
+    mw.presetFilename = QString::fromUtf8("does not matter");
+
+    // spy needed such that events actually happen
+    QSignalSpy spyLoadAction(ui->loadMenuAction, &QAction::triggered);
+    QSignalSpy spyPlayPauseButton(ui->playPauseButton, &QAbstractButton::pressed);
+
+    // Act
+    auto menuBar = ui->menubar;
+    QVERIFY2(menuBar != nullptr, qPrintable(QString::fromUtf8(u8"menuBar not found")));
+    if (menuBar != nullptr)
+    {
+        auto actions = menuBar->actions();
+        for (auto action : actions)
+        {
+            if (action->objectName() == QString::fromUtf8("load"))
+            {
+                action->trigger();
+                break;
+            }
+        }
+    }
+
+    spyLoadAction.wait(100);
+
+    QTest::mouseClick(mw.ui->playPauseButton, Qt::LeftButton);
+    spyPlayPauseButton.wait(100);
+
+    QThread::msleep(500);
+
+    QTest::mouseClick(mw.ui->playPauseButton, Qt::LeftButton);
+    spyPlayPauseButton.wait(100);
+
+    QTest::mouseClick(mw.ui->playPauseButton, Qt::LeftButton);
+    spyPlayPauseButton.wait();
+
+    // Assert
+    {
+        bool playPauseButtonDisabled = !ui->playPauseButton->isEnabled();
+        bool stopButtonEnabled = ui->stopButton->isEnabled();
+        bool stepBackButtonEnabled = ui->stepBackButton->isEnabled();
+        bool stepForwardButtonDisabled = !ui->stepForwardButton->isEnabled();
+
+        // Assert
+        QVERIFY2(playPauseButtonDisabled, qPrintable(QString::fromUtf8(u8"incorrect state (enabled) for playPauseButton")));
+        QVERIFY2(stopButtonEnabled, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for stopButton")));
+        QVERIFY2(stepBackButtonEnabled, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for stepBackButton")));
+        QVERIFY2(stepForwardButtonDisabled, qPrintable(QString::fromUtf8(u8"incorrect state (enabled) for stepForwardButton")));
+    }
+}
+
+void FrontendTest::PlayAndStopShallYieldCorrectState()
+{
+    // Arrange
+    MainWindow mw(std::make_shared<TestHelper::TestRepository>(20));
+    mw.playInterval = 50;
+    auto ui = mw.ui;
+    mw.presetFilename = QString::fromUtf8("does not matter");
+
+    // spy needed such that events actually happen
+    QSignalSpy spyLoadAction(ui->loadMenuAction, &QAction::triggered);
+    QSignalSpy spyPlayPauseButton(ui->playPauseButton, &QAbstractButton::pressed);
+    QSignalSpy spyStopButton(ui->stopButton, &QAbstractButton::pressed);
+
+    // Act
+    auto menuBar = ui->menubar;
+    QVERIFY2(menuBar != nullptr, qPrintable(QString::fromUtf8(u8"menuBar not found")));
+    if (menuBar != nullptr)
+    {
+        auto actions = menuBar->actions();
+        for (auto action : actions)
+        {
+            if (action->objectName() == QString::fromUtf8("load"))
+            {
+                action->trigger();
+                break;
+            }
+        }
+    }
+
+    spyLoadAction.wait(100);
+
+    QTest::mouseClick(mw.ui->playPauseButton, Qt::LeftButton);
+    spyPlayPauseButton.wait(100);
+
+    QThread::msleep(200);
+
+    QTest::mouseClick(mw.ui->stopButton, Qt::LeftButton);
+    spyStopButton.wait(100);
+
+    // Assert
+    {
+        bool playPauseButtonEnabled = ui->playPauseButton->isEnabled();
+        bool stopButtonDisabled = !ui->stopButton->isEnabled();
+        bool stepBackButtonDisabled = !ui->stepBackButton->isEnabled();
+        bool stepForwardButtonEnabled = ui->stepForwardButton->isEnabled();
+
+        // Assert
+        QVERIFY2(playPauseButtonEnabled, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for playPauseButton")));
+        QVERIFY2(stopButtonDisabled, qPrintable(QString::fromUtf8(u8"incorrect state (enabled) for stopButton")));
+        QVERIFY2(stepBackButtonDisabled, qPrintable(QString::fromUtf8(u8"incorrect state (enabled) for stepBackButton")));
+        QVERIFY2(stepForwardButtonEnabled, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for stepForwardButton")));
+    }
 }
 
 #endif // _USE_LONG_TEST

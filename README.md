@@ -12,7 +12,7 @@ This is alpha status.
 
 I am currently not looking for contributors. 
 
-`clang-tidy` has been added, be sure to configure QtCreator to use the [.clang-tidy](.clang-tidy) file.
+It is necessary to define `_SKIP_LONG_TEST` or `_USE_LONG_TEST` as additional arguments to `qmake`. [Google Test](https://github.com/google/googletest) must be available and the `GOOGLETEST_DIR` environment variable must be set to its root directory. `clang-tidy` has been added, be sure to configure QtCreator to use the [.clang-tidy](.clang-tidy) file.
 
 ## License
 

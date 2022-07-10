@@ -19,9 +19,6 @@
 include(../Backend/Backend.pri)
 include(../TestHelper/TestHelper.pri)
 
-# you may need to change this
-GOOGLETEST_DIR = D:\\VSProject\\googletest
-
 include(gtest_dependency.pri)
 
 TEMPLATE = app

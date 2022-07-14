@@ -48,9 +48,16 @@ class Ui_MainWindow
     Q_DECLARE_TR_FUNCTIONS(Ui_MainWindow);
 
 protected:
-    explicit Ui_MainWindow() = default; //NOLINT(cppcoreguidelines-pro-type-member-init)
+    explicit Ui_MainWindow() //NOLINT(cppcoreguidelines-pro-type-member-init)
+    : playIcon(":/play256.png"),
+      pauseIcon(":/pause256.png")
+    {
+    }
 
 private:
+    QIcon playIcon;
+    QIcon pauseIcon;
+
     QMenuBar * menubar{};
     QAction * loadMenuAction{};
     QAction * loadFixedMenuAction{};
@@ -108,18 +115,22 @@ public:
 
         playPauseButton = new QPushButton(controlFrame); //NOLINT(cppcoreguidelines-owning-memory)
         playPauseButton->setObjectName(QString::fromUtf8(u8"playPauseButton"));
+        playPauseButton->setIcon(playIcon);
         controlLayout->addWidget(playPauseButton);
 
         stopButton = new QPushButton(controlFrame); //NOLINT(cppcoreguidelines-owning-memory)
         stopButton->setObjectName(QString::fromUtf8(u8"stopButton"));
+        stopButton->setIcon(QIcon(":/stop256.png"));
         controlLayout->addWidget(stopButton);
 
         stepBackButton = new QPushButton(controlFrame); //NOLINT(cppcoreguidelines-owning-memory)
         stepBackButton->setObjectName(QString::fromUtf8(u8"stepBackButton"));
+        stepBackButton->setIcon(QIcon(":/back256.png"));
         controlLayout->addWidget(stepBackButton);
 
         stepForwardButton = new QPushButton(controlFrame); //NOLINT(cppcoreguidelines-owning-memory)
         stepForwardButton->setObjectName(QString::fromUtf8(u8"stepForwardButton"));
+        stepForwardButton->setIcon(QIcon(":/forward256.png"));
         controlLayout->addWidget(stepForwardButton);
 
         mainLayout->addWidget(controlFrame);
@@ -133,11 +144,6 @@ private:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "QtMolMove", nullptr));
-
-        this->playPauseButton->setText(QCoreApplication::translate("MainWindow", "Play/Pause", nullptr));
-        this->stopButton->setText(QCoreApplication::translate("MainWindow", "Stop", nullptr));
-        this->stepBackButton->setText(QCoreApplication::translate("MainWindow", "Step Back", nullptr));
-        this->stepForwardButton->setText(QCoreApplication::translate("MainWindow", "Step Forward", nullptr));
     } // retranslateUi
 
     void setupMenuBar(QMainWindow * MainWindow)

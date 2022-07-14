@@ -99,10 +99,10 @@ void MainWindow::Update()
     this->ui->stepBackButton->setEnabled(!this->isPlaying && hasMultiframeTrajectory && this->index > 0);
     this->ui->stepForwardButton->setEnabled(!this->isPlaying && hasMultiframeTrajectory && this->index + 1 < this->trajectory->Frames().size());
 
-    this->ui->playPauseButton->setText(
-                this->isPlaying
-                ? QCoreApplication::translate("MainWindow", "Pause", nullptr)
-                : QCoreApplication::translate("MainWindow", "Play", nullptr));
+    this->ui->playPauseButton->setIcon(
+                this->isPlaying && hasMultiframeTrajectory && this->index + 1 < this->trajectory->Frames().size()
+                ? this->ui->pauseIcon
+                : this->ui->playIcon);
 
     this->UpdatePlot();
 }

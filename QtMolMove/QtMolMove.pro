@@ -34,7 +34,14 @@ SOURCES += main.cpp
 RC_ICONS = icon.ico
 
 RESOURCES += \
-    $$PWD/icon.ico
+    $$PWD/icon.ico \
+    $$PWD/back256.png \
+    $$PWD/faster256.png \
+    $$PWD/forward256.png \
+    $$PWD/pause256.png \
+    $$PWD/play256.png \
+    $$PWD/slower256.png \
+    $$PWD/stop256.png
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -84,7 +84,7 @@ public:
             MainWindow->setObjectName(QString::fromUtf8(u8"MainWindow"));
         }
 
-        MainWindow->resize(1200, 800); //NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+        MainWindow->resize(728, 800); //NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
         setupMenuBar(MainWindow);
 
@@ -144,6 +144,11 @@ private:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "QtMolMove", nullptr));
+
+        playPauseButton->setToolTip(QCoreApplication::translate("MainWindow", "Play / Pause", nullptr));
+        stopButton->setToolTip(QCoreApplication::translate("MainWindow", "Stop", nullptr));
+        stepBackButton->setToolTip(QCoreApplication::translate("MainWindow", "Step Back", nullptr));
+        stepForwardButton->setToolTip(QCoreApplication::translate("MainWindow", "Step Forward", nullptr));
     } // retranslateUi
 
     void setupMenuBar(QMainWindow * MainWindow)

@@ -4,18 +4,38 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="mainwindow_ui.h" line="154"/>
+        <location filename="mainwindow_ui.h" line="148"/>
+        <source>Play / Pause</source>
+        <translation>Play / Pause</translation>
+    </message>
+    <message>
+        <location filename="mainwindow_ui.h" line="149"/>
+        <source>Stop</source>
+        <translation>Stop</translation>
+    </message>
+    <message>
+        <location filename="mainwindow_ui.h" line="150"/>
+        <source>Step Back</source>
+        <translation>Step Back</translation>
+    </message>
+    <message>
+        <location filename="mainwindow_ui.h" line="151"/>
+        <source>Step Forward</source>
+        <translation>Step Forward</translation>
+    </message>
+    <message>
+        <location filename="mainwindow_ui.h" line="160"/>
         <source>Load ...</source>
         <translation>Load ...</translation>
     </message>
     <message>
-        <location filename="mainwindow_ui.h" line="158"/>
+        <location filename="mainwindow_ui.h" line="164"/>
         <source>Load Fixed ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="162"/>
-        <location filename="mainwindow_ui.h" line="163"/>
+        <location filename="mainwindow_ui.h" line="169"/>
         <source>About %1</source>
         <extracomment>Arg 1 is a placeholder for the program name</extracomment>
         <translation>About %1</translation>
@@ -23,8 +43,8 @@
     <message>
         <location filename="mainwindow.cpp" line="163"/>
         <location filename="mainwindow.cpp" line="167"/>
-        <location filename="mainwindow_ui.h" line="145"/>
-        <location filename="mainwindow_ui.h" line="164"/>
+        <location filename="mainwindow_ui.h" line="146"/>
+        <location filename="mainwindow_ui.h" line="170"/>
         <source>QtMolMove</source>
         <translation>QtMolMove</translation>
     </message>

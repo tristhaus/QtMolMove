@@ -75,6 +75,9 @@ private:
     QPushButton * stopButton{};
     QPushButton * stepBackButton{};
     QPushButton * stepForwardButton{};
+    QPushButton * slowerButton{};
+    QSpinBox * intervalEdit{};
+    QPushButton * fasterButton{};
 
 public:
     void setupUi(QMainWindow * MainWindow)
@@ -133,6 +136,24 @@ public:
         stepForwardButton->setIcon(QIcon(":/forward256.png"));
         controlLayout->addWidget(stepForwardButton);
 
+        slowerButton = new QPushButton(controlFrame); //NOLINT(cppcoreguidelines-owning-memory)
+        slowerButton->setObjectName(QString::fromUtf8(u8"slowerButton"));
+        slowerButton->setIcon(QIcon(":/slower256.png"));
+        controlLayout->addWidget(slowerButton);
+
+        intervalEdit = new QSpinBox(controlFrame); //NOLINT(cppcoreguidelines-owning-memory)
+        intervalEdit->setObjectName(QString::fromUtf8(u8"intervalEdit"));
+        intervalEdit->setButtonSymbols(QAbstractSpinBox::NoButtons);
+        intervalEdit->setSuffix(QString::fromUtf8(" ms"));
+        intervalEdit->setMaximumWidth(60);
+        intervalEdit->setAlignment(Qt::AlignHCenter);
+        controlLayout->addWidget(intervalEdit);
+
+        fasterButton = new QPushButton(controlFrame); //NOLINT(cppcoreguidelines-owning-memory)
+        fasterButton->setObjectName(QString::fromUtf8(u8"fasterButton"));
+        fasterButton->setIcon(QIcon(":/faster256.png"));
+        controlLayout->addWidget(fasterButton);
+
         mainLayout->addWidget(controlFrame);
 
         MainWindow->setCentralWidget(centralwidget);
@@ -149,6 +170,9 @@ private:
         stopButton->setToolTip(QCoreApplication::translate("MainWindow", "Stop", nullptr));
         stepBackButton->setToolTip(QCoreApplication::translate("MainWindow", "Step Back", nullptr));
         stepForwardButton->setToolTip(QCoreApplication::translate("MainWindow", "Step Forward", nullptr));
+        slowerButton->setToolTip(QCoreApplication::translate("MainWindow", "Slower", nullptr));
+        intervalEdit->setToolTip(QCoreApplication::translate("MainWindow", "Frame interval in milliseconds", nullptr));
+        fasterButton->setToolTip(QCoreApplication::translate("MainWindow", "Faster", nullptr));
     } // retranslateUi
 
     void setupMenuBar(QMainWindow * MainWindow)

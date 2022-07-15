@@ -51,6 +51,8 @@ private:
      * \brief The time between frames in milliseconds.
      */
     std::atomic_int playInterval;
+    const int maxPlayInterval;
+    const int minPlayInterval;
 
     std::unique_ptr<QMessageBox> aboutMessageBox;
     std::shared_ptr<Backend::Trajectory> trajectory;
@@ -70,15 +72,18 @@ private:
     void InitPlot();
     void Update();
     void UpdatePlot();
+    void UpdateIntervalEdit();
     void LoadTrajectory();
     void LoadFixedTrajectory();
-    void ShowNotImplementedBox();
     void ShowAboutDialog();
     void StartPlaying();
     void StopPlaying();
     void ResetToBeginning();
     void BackOneFrame();
     void ForwardOneFrame();
+    void MakeIntervalSlower();
+    void MakeIntervalFaster();
+    void HandleIntervalChange(int interval);
     QColor GetColorFor(int id);
 
 private slots:
@@ -90,6 +95,9 @@ private slots:
     void OnStopPressed();
     void OnStepBackPressed();
     void OnStepForwardPressed();
+    void OnSlowerPressed();
+    void OnFasterPressed();
+    void OnIntervalEditValueChanged(int newValue);
 
 private:
     /*!

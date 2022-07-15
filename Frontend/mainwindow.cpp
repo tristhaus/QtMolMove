@@ -30,9 +30,14 @@ MainWindow::MainWindow(std::shared_ptr<Backend::Repository> repository, QWidget 
       index(0),
       isPlaying(false),
       playTimer(QTimer(this)),
-      playInterval(100)
+      playInterval(40),
+      maxPlayInterval(2000),
+      minPlayInterval(10)
 {
     ui->setupUi(this);
+
+    ui->intervalEdit->setMaximum(this->maxPlayInterval);
+    ui->intervalEdit->setMinimum(this->minPlayInterval);
 
     connect(&(this->playTimer), &QTimer::timeout, this, &MainWindow::OnPlayTimerTimeout);
     this->playTimer.setSingleShot(false);
@@ -45,6 +50,9 @@ MainWindow::MainWindow(std::shared_ptr<Backend::Repository> repository, QWidget 
     connect(ui->stopButton, &QAbstractButton::pressed, this, &MainWindow::OnStopPressed);
     connect(ui->stepBackButton, &QAbstractButton::pressed, this, &MainWindow::OnStepBackPressed);
     connect(ui->stepForwardButton, &QAbstractButton::pressed, this, &MainWindow::OnStepForwardPressed);
+    connect(ui->slowerButton, &QAbstractButton::pressed, this, &MainWindow::OnSlowerPressed);
+    connect(ui->fasterButton, &QAbstractButton::pressed, this, &MainWindow::OnFasterPressed);
+    connect(ui->intervalEdit, &QSpinBox::valueChanged, this, &MainWindow::OnIntervalEditValueChanged);
 
     this->InitPlot();
 
@@ -104,6 +112,8 @@ void MainWindow::Update()
                 ? this->ui->pauseIcon
                 : this->ui->playIcon);
 
+    this->UpdateIntervalEdit();
+
     this->UpdatePlot();
 }
 
@@ -150,6 +160,11 @@ void MainWindow::UpdatePlot()
     }
 
     plot->replot();
+}
+
+void MainWindow::UpdateIntervalEdit()
+{
+    this->ui->intervalEdit->setValue(this->playInterval);
 }
 
 QColor MainWindow::GetColorFor(int id)
@@ -205,19 +220,6 @@ void MainWindow::ResetToBeginning()
     this->index = 0;
 
     this->Update();
-}
-
-void MainWindow::ShowNotImplementedBox() // todo : obsolete
-{
-    QString messageBoxTitle = QString::fromUtf8("Not implemented");
-    QString messageBoxText = QString::fromUtf8("Feature not yet implemented");
-
-    auto box = std::make_unique<QMessageBox>(
-                QMessageBox::Icon::Critical,
-                messageBoxTitle,
-                messageBoxText);
-
-    box->exec();
 }
 
 void MainWindow::LoadTrajectory()
@@ -295,6 +297,29 @@ void MainWindow::ForwardOneFrame()
     }
 }
 
+void MainWindow::MakeIntervalSlower()
+{
+    this->playInterval = std::max(this->minPlayInterval, static_cast<int>(std::round(1.1 * this->playInterval)));
+
+    this->UpdateIntervalEdit();
+}
+
+void MainWindow::MakeIntervalFaster()
+{
+    this->playInterval = std::min(this->maxPlayInterval, static_cast<int>(std::round(0.9 * this->playInterval)));
+
+    this->UpdateIntervalEdit();
+}
+
+void MainWindow::HandleIntervalChange(int interval)
+{
+    this->playInterval = interval;
+
+    this->playTimer.setInterval(this->playInterval);
+
+    this->Update();
+}
+
 void MainWindow::OnPlayTimerTimeout()
 {
     this->ForwardOneFrame();
@@ -338,4 +363,19 @@ void MainWindow::OnStepBackPressed()
 void MainWindow::OnStepForwardPressed()
 {
     this->ForwardOneFrame();
+}
+
+void MainWindow::OnSlowerPressed()
+{
+    this->MakeIntervalSlower();
+}
+
+void MainWindow::OnFasterPressed()
+{
+    this->MakeIntervalFaster();
+}
+
+void MainWindow::OnIntervalEditValueChanged(int newValue)
+{
+    this->HandleIntervalChange(newValue);
 }

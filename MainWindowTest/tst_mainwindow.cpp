@@ -51,6 +51,7 @@ private slots:
     void PlayAndPauseShallYieldCorrectState();
     void PlayPausePlayShallRunToEnd();
     void PlayAndStopShallYieldCorrectState();
+    void SlowerFasterAndEntryShallChangeInterval();
 #endif // _USE_LONG_TEST
 };
 
@@ -588,6 +589,99 @@ void FrontendTest::PlayAndStopShallYieldCorrectState()
         QVERIFY2(stopButtonDisabled, qPrintable(QString::fromUtf8(u8"incorrect state (enabled) for stopButton")));
         QVERIFY2(stepBackButtonDisabled, qPrintable(QString::fromUtf8(u8"incorrect state (enabled) for stepBackButton")));
         QVERIFY2(stepForwardButtonEnabled, qPrintable(QString::fromUtf8(u8"incorrect state (disabled) for stepForwardButton")));
+    }
+}
+
+void FrontendTest::SlowerFasterAndEntryShallChangeInterval()
+{
+    // Arrange
+    MainWindow mw(std::make_shared<TestHelper::TestRepository>(20));
+    mw.playInterval = 50;
+    auto ui = mw.ui;
+    mw.presetFilename = QString::fromUtf8("does not matter");
+
+    // spy needed such that events actually happen
+    QSignalSpy spyLoadAction(ui->loadMenuAction, &QAction::triggered);
+    QSignalSpy spySlowerButton(ui->slowerButton, &QAbstractButton::pressed);
+    QSignalSpy spyIntervalEdit(ui->intervalEdit, &QSpinBox::valueChanged);
+    QSignalSpy spyFasterButton(ui->fasterButton, &QAbstractButton::pressed);
+
+    // Act
+    auto menuBar = ui->menubar;
+    QVERIFY2(menuBar != nullptr, qPrintable(QString::fromUtf8(u8"menuBar not found")));
+    if (menuBar != nullptr)
+    {
+        auto actions = menuBar->actions();
+        for (auto action : actions)
+        {
+            if (action->objectName() == QString::fromUtf8("load"))
+            {
+                action->trigger();
+                break;
+            }
+        }
+    }
+
+    int displayValue = ui->intervalEdit->value();
+    int internalValue = mw.playInterval;
+
+    spyLoadAction.wait(100);
+
+    QTest::mouseClick(mw.ui->slowerButton, Qt::LeftButton);
+    spySlowerButton.wait(100);
+
+    QThread::msleep(200);
+
+    // Assert
+    {
+        int newDisplayValue = ui->intervalEdit->value();
+        int newInternalValue = mw.playInterval;
+
+        bool internalValueIsHigher = newInternalValue > internalValue;
+        bool displayValueIsHigher = newDisplayValue > displayValue;
+        bool valuesAreSynced = newDisplayValue == newInternalValue;
+
+        // Assert
+        QVERIFY2(internalValueIsHigher, qPrintable(QString::fromUtf8(u8"internal value is not higher")));
+        QVERIFY2(displayValueIsHigher, qPrintable(QString::fromUtf8(u8"display value is not higher")));
+        QVERIFY2(valuesAreSynced, qPrintable(QString::fromUtf8(u8"values are not synced")));
+    }
+
+    displayValue = ui->intervalEdit->value();
+    internalValue = mw.playInterval;
+
+    QTest::mouseClick(mw.ui->fasterButton, Qt::LeftButton);
+    spyFasterButton.wait(100);
+
+    // Assert
+    {
+        int newDisplayValue = ui->intervalEdit->value();
+        int newInternalValue = mw.playInterval;
+
+        bool displayValueIsLower = newDisplayValue < displayValue;
+        bool internalValueIsLower = newInternalValue < internalValue;
+        bool valuesAreSynced = newDisplayValue == newInternalValue;
+
+        // Assert
+        QVERIFY2(displayValueIsLower, qPrintable(QString::fromUtf8(u8"display value is not lower")));
+        QVERIFY2(internalValueIsLower, qPrintable(QString::fromUtf8(u8"internal value is not lower")));
+        QVERIFY2(valuesAreSynced, qPrintable(QString::fromUtf8(u8"values are not synced")));
+    }
+
+    QTest::keySequence(ui->intervalEdit, QKeySequence(QKeySequence::StandardKey::SelectAll));
+    QTest::keyClicks(ui->intervalEdit, QString("324"));
+
+    // Assert
+    {
+        int newDisplayValue = ui->intervalEdit->value();
+        int newInternalValue = mw.playInterval;
+
+        bool displayValueIsCorrect = newDisplayValue == 324;
+        bool internalValueIsCorrect = newInternalValue == 324;
+
+        // Assert
+        QVERIFY2(displayValueIsCorrect, qPrintable(QString::fromUtf8(u8"display value is not correct")));
+        QVERIFY2(internalValueIsCorrect, qPrintable(QString::fromUtf8(u8"internal value is not correct")));
     }
 }
 

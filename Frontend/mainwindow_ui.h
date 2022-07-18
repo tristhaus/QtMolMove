@@ -33,6 +33,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
+#include "mouseonlyslider.h"
 #include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
@@ -68,6 +69,8 @@ private:
 
     QCustomPlot * plot{};
 
+    MouseOnlySlider * slider{};
+
     QFrame * controlFrame{};
     QHBoxLayout * controlLayout{};
 
@@ -101,6 +104,12 @@ public:
         plot->setObjectName(QString::fromUtf8(u8"plot"));
 
         mainLayout->addWidget(plot);
+
+        slider = new MouseOnlySlider(centralwidget); //NOLINT(cppcoreguidelines-owning-memory)
+        slider->setObjectName(QString::fromUtf8(u8"slider"));
+        slider->setOrientation(Qt::Orientation::Horizontal);
+
+        mainLayout->addWidget(slider);
 
         controlFrame = new QFrame(centralwidget); //NOLINT(cppcoreguidelines-owning-memory)
         controlFrame->setObjectName(QString::fromUtf8(u8"controlFrame"));

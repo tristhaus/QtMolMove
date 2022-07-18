@@ -46,6 +46,12 @@ private:
     std::atomic_uint index;
     std::atomic_bool isPlaying;
     QTimer playTimer;
+    std::atomic_bool sliderIsPressed;
+    QTimer sliderTimer;
+    /*!
+     * \brief The wait time before updating on slider moving in milliseconds.
+     */
+    const int sliderTimerInterval;
 
     /*!
      * \brief The time between frames in milliseconds.
@@ -84,13 +90,21 @@ private:
     void MakeIntervalSlower();
     void MakeIntervalFaster();
     void HandleIntervalChange(int interval);
+    void UpdateSliderRange(int maximumIndex);
+    void BeginScrolling();
+    void Scroll();
+    void EndScrolling();
     QColor GetColorFor(int id);
 
 private slots:
     void OnPlayTimerTimeout();
+    void OnSliderTimerTimeout();
     void OnLoadTriggered();
     void OnLoadFixedTriggered();
     void OnAboutTriggered();
+    void OnSliderPressed();
+    void OnSliderMoved();
+    void OnSliderReleased();
     void OnPlayPausePressed();
     void OnStopPressed();
     void OnStepBackPressed();

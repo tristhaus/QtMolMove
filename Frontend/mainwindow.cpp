@@ -30,6 +30,9 @@ MainWindow::MainWindow(std::shared_ptr<Backend::Repository> repository, QWidget 
       index(0),
       isPlaying(false),
       playTimer(QTimer(this)),
+      sliderIsPressed(false),
+      sliderTimer(QTimer(this)),
+      sliderTimerInterval(10),
       playInterval(40),
       maxPlayInterval(2000),
       minPlayInterval(10)
@@ -43,9 +46,16 @@ MainWindow::MainWindow(std::shared_ptr<Backend::Repository> repository, QWidget 
     this->playTimer.setSingleShot(false);
     this->playTimer.setInterval(this->playInterval);
 
+    connect(&(this->sliderTimer), &QTimer::timeout, this, &MainWindow::OnSliderTimerTimeout);
+    this->sliderTimer.setSingleShot(true);
+    this->sliderTimer.setInterval(this->sliderTimerInterval);
+
     connect(ui->loadMenuAction, &QAction::triggered, this, &MainWindow::OnLoadTriggered);
     connect(ui->loadFixedMenuAction, &QAction::triggered, this, &MainWindow::OnLoadFixedTriggered);
     connect(ui->aboutMenuAction, &QAction::triggered, this, &MainWindow::OnAboutTriggered);
+    connect(ui->slider, &QSlider::sliderPressed, this, &MainWindow::OnSliderPressed);
+    connect(ui->slider, &QSlider::sliderMoved, this, &MainWindow::OnSliderMoved);
+    connect(ui->slider, &QSlider::sliderReleased, this, &MainWindow::OnSliderReleased);
     connect(ui->playPauseButton, &QAbstractButton::pressed, this, &MainWindow::OnPlayPausePressed);
     connect(ui->stopButton, &QAbstractButton::pressed, this, &MainWindow::OnStopPressed);
     connect(ui->stepBackButton, &QAbstractButton::pressed, this, &MainWindow::OnStepBackPressed);
@@ -102,6 +112,8 @@ void MainWindow::Update()
 {
     auto hasMultiframeTrajectory = this->trajectory != nullptr && this->trajectory->Frames().size() > 1;
 
+    this->ui->slider->setEnabled(hasMultiframeTrajectory);
+
     this->ui->playPauseButton->setEnabled(hasMultiframeTrajectory && this->index + 1 < this->trajectory->Frames().size());
     this->ui->stopButton->setEnabled(hasMultiframeTrajectory && this->index > 0);
     this->ui->stepBackButton->setEnabled(!this->isPlaying && hasMultiframeTrajectory && this->index > 0);
@@ -111,6 +123,11 @@ void MainWindow::Update()
                 this->isPlaying && hasMultiframeTrajectory && this->index + 1 < this->trajectory->Frames().size()
                 ? this->ui->pauseIcon
                 : this->ui->playIcon);
+
+    this->ui->slowerButton->setEnabled(this->playInterval > this->minPlayInterval);
+    this->ui->fasterButton->setEnabled(this->playInterval < this->maxPlayInterval);
+
+    this->ui->slider->setValue(this->index);
 
     this->UpdateIntervalEdit();
 
@@ -165,6 +182,12 @@ void MainWindow::UpdatePlot()
 void MainWindow::UpdateIntervalEdit()
 {
     this->ui->intervalEdit->setValue(this->playInterval);
+}
+
+void MainWindow::UpdateSliderRange(int maximumIndex)
+{
+    this->ui->slider->setMinimum(0);
+    this->ui->slider->setMaximum(maximumIndex);
 }
 
 QColor MainWindow::GetColorFor(int id)
@@ -267,6 +290,7 @@ void MainWindow::LoadTrajectory()
     }
 
     this->Update();
+    this->UpdateSliderRange(static_cast<int>(this->trajectory->Frames().size()) - 1);
 }
 
 void MainWindow::LoadFixedTrajectory()
@@ -277,6 +301,7 @@ void MainWindow::LoadFixedTrajectory()
     this->ui->plot->clearItems();
 
     this->Update();
+    this->UpdateSliderRange(static_cast<int>(this->trajectory->Frames().size()) - 1);
 }
 
 void MainWindow::BackOneFrame()
@@ -322,14 +347,52 @@ void MainWindow::HandleIntervalChange(int interval)
     this->Update();
 }
 
+void MainWindow::BeginScrolling()
+{
+    this->sliderIsPressed = true;
+}
+
+void MainWindow::Scroll()
+{
+    this->sliderTimer.stop();
+    this->sliderTimer.start();
+}
+
+void MainWindow::EndScrolling()
+{
+    this->sliderIsPressed = false;
+
+    this->sliderTimer.stop();
+
+    this->index = this->ui->slider->value();
+    this->Update();
+
+    if (this->isPlaying)
+    {
+        this->playTimer.stop();
+        this->playTimer.start();
+    }
+}
+
 void MainWindow::OnPlayTimerTimeout()
 {
+    if (this->sliderIsPressed)
+    {
+        return;
+    }
+
     this->ForwardOneFrame();
 
     if (this->index + 1 >= this->trajectory->Frames().size())
     {
         this->StopPlaying();
     }
+}
+
+void MainWindow::OnSliderTimerTimeout()
+{
+    this->index = this->ui->slider->value();
+    this->Update();
 }
 
 void MainWindow::OnLoadTriggered()
@@ -345,6 +408,21 @@ void MainWindow::OnLoadFixedTriggered()
 void MainWindow::OnAboutTriggered()
 {
     this->ShowAboutDialog();
+}
+
+void MainWindow::OnSliderPressed()
+{
+    this->BeginScrolling();
+}
+
+void MainWindow::OnSliderMoved()
+{
+    this->Scroll();
+}
+
+void MainWindow::OnSliderReleased()
+{
+    this->EndScrolling();
 }
 
 void MainWindow::OnPlayPausePressed()

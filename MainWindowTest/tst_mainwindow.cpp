@@ -75,6 +75,8 @@ void FrontendTest::ConstructionShallWorkCompletely() //NOLINT(google-readability
 
         QVERIFY2(mw.ui->plot, qPrintable(QString::fromUtf8(u8"not created plot")));
 
+        QVERIFY2(mw.ui->slider, qPrintable(QString::fromUtf8(u8"not created slider")));
+
         QVERIFY2(mw.ui->controlFrame, qPrintable(QString::fromUtf8(u8"not created control frame")));
         QVERIFY2(mw.ui->controlLayout, qPrintable(QString::fromUtf8(u8"not created control layout")));
 
@@ -82,7 +84,9 @@ void FrontendTest::ConstructionShallWorkCompletely() //NOLINT(google-readability
         QVERIFY2(mw.ui->stopButton, qPrintable(QString::fromUtf8(u8"not created stop button")));
         QVERIFY2(mw.ui->stepBackButton, qPrintable(QString::fromUtf8(u8"not created step back button")));
         QVERIFY2(mw.ui->stepForwardButton, qPrintable(QString::fromUtf8(u8"not created step forward button")));
-
+        QVERIFY2(mw.ui->slowerButton, qPrintable(QString::fromUtf8(u8"not created slower button")));
+        QVERIFY2(mw.ui->intervalEdit, qPrintable(QString::fromUtf8(u8"not created step interval edit")));
+        QVERIFY2(mw.ui->fasterButton, qPrintable(QString::fromUtf8(u8"not created faster button")));
     }
     catch (std::exception & ex)
     {

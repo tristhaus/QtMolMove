@@ -23,6 +23,7 @@ SOURCES += \
 HEADERS += \
     $$PWD/mainwindow.h \
     $$PWD/mainwindow_ui.h  \
+    $$PWD/mouseonlyslider.h \
     $$PWD/qcustomplot.h
 
 TRANSLATIONS += \

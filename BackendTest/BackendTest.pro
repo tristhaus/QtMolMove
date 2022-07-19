@@ -22,7 +22,7 @@ include(../TestHelper/TestHelper.pri)
 include(gtest_dependency.pri)
 
 TEMPLATE = app
-CONFIG += console c++11 thread
+CONFIG += console c++17 thread
 CONFIG -= app_bundle
 
 HEADERS += \

@@ -152,18 +152,15 @@ std::shared_ptr<Backend::Trajectory> Backend::Deserializer::Deserialize(std::ist
 
         rapidjson::StringBuffer sb;
         validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);
-        ss << "Invalid schema: " << sb.GetString() << "\n";
+        ss << "Schema Pointer: " << sb.GetString() << "\n";
         sb.Clear();
 
-        ss << "Invalid keyword: " << validator.GetInvalidSchemaKeyword() << "\n";
+        ss << "Schema Keyword: " << validator.GetInvalidSchemaKeyword() << "\n";
 
         validator.GetInvalidDocumentPointer().StringifyUriFragment(sb);
-        ss << "Invalid document: " << sb.GetString() << "\n";
+        ss << "Invalid Document Pointer: " << sb.GetString() << "\n";
 
-        std::string error;
-        ss >> error;
-
-        throw std::runtime_error(error);
+        throw std::runtime_error(ss.str());
     }
 
     if (!(document.HasMember(KeyVersion) && document[KeyVersion].IsInt() && document[KeyVersion].GetInt() == 1))

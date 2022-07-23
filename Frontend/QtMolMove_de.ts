@@ -76,8 +76,12 @@
     </message>
     <message>
         <location filename="mainwindow.cpp" line="253"/>
-        <source>On attempted load, error occurred: %1</source>
-        <translation>Beim Ladeversuch trat dieser Fehler auf: %1</translation>
+        <source>On attempted load, error occurred:
+%1</source>
+        <oldsource>On attempted load, error occurred:
+ %1</oldsource>
+        <translation>Beim Ladeversuch trat dieser Fehler auf:
+%1</translation>
     </message>
 </context>
 </TS>

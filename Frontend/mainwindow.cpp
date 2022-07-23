@@ -250,7 +250,7 @@ void MainWindow::LoadTrajectory()
     catch(std::exception & exception)
     {
         QString messageBoxTitle = QCoreApplication::translate("MainWindow", "Error", nullptr);
-        QString messageBoxTextTemplate = QCoreApplication::translate("MainWindow", "On attempted load, error occurred: %1", nullptr);
+        QString messageBoxTextTemplate = QCoreApplication::translate("MainWindow", "On attempted load, error occurred:\n%1", nullptr);
         QString errorMesssage = QString::fromUtf8(exception.what());
         QString messageBoxText = messageBoxTextTemplate.arg(errorMesssage);
 
@@ -262,6 +262,8 @@ void MainWindow::LoadTrajectory()
         errorBox->exec();
 
         errorBox.reset();
+
+        return;
     }
 
     this->Update();

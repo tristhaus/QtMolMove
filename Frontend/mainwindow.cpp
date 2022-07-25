@@ -25,7 +25,6 @@
 MainWindow::MainWindow(std::shared_ptr<Backend::Repository> repository, QWidget *parent)
     : QMainWindow(parent),
       repository(std::move(repository)),
-      fixedRepository(std::make_shared<Backend::FixedRepository>()),
       ui(new Ui::MainWindow),
       index(0),
       isPlaying(false),
@@ -51,7 +50,6 @@ MainWindow::MainWindow(std::shared_ptr<Backend::Repository> repository, QWidget 
     this->sliderTimer.setInterval(this->sliderTimerInterval);
 
     connect(ui->loadMenuAction, &QAction::triggered, this, &MainWindow::OnLoadTriggered);
-    connect(ui->loadFixedMenuAction, &QAction::triggered, this, &MainWindow::OnLoadFixedTriggered);
     connect(ui->aboutMenuAction, &QAction::triggered, this, &MainWindow::OnAboutTriggered);
     connect(ui->slider, &QSlider::sliderPressed, this, &MainWindow::OnSliderPressed);
     connect(ui->slider, &QSlider::sliderMoved, this, &MainWindow::OnSliderMoved);
@@ -201,7 +199,7 @@ void MainWindow::ShowAboutDialog()
     auto messageBoxTitle = messageBoxTitleTemplate.arg(QCoreApplication::translate("MainWindow", "QtMolMove", nullptr));
 
     //: Arg 1 is a placeholder for the program name. Format is Qt Rich Text.
-    auto messageBoxTextTemplate = QCoreApplication::translate("MainWindow", R"(A simple program to display 2D trajectories of spherical objects.<br /><br />%1 Copyright (C) 2022 and later, tristhaus<br />This program comes with ABSOLUTELY NO WARRANTY.<br />This is free software, and you are welcome to redistribute it under certain conditions. See provided LICENSE file for details.<br /><br />Graphical user interface built using <a href="https://doc.qt.io/">Qt</a>.<br /><a href="https://www.qcustomplot.com/">QCustomPlot</a> library (Version 2.1.0) by Emanuel Eichhammer used under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL v3</a>.)", nullptr);
+    auto messageBoxTextTemplate = QCoreApplication::translate("MainWindow", R"(A simple program to display 2D trajectories of spherical objects.<br /><br />%1 Copyright (C) 2022 and later, tristhaus<br />This program comes with ABSOLUTELY NO WARRANTY.<br />This is free software, and you are welcome to redistribute it under certain conditions. See provided LICENSE file for details.<br /><br />Graphical user interface built using <a href="https://doc.qt.io/">Qt</a>.<br /><a href="https://www.qcustomplot.com/">QCustomPlot</a> library (Version 2.1.0) by Emanuel Eichhammer used under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL v3</a>.<br />JSON de/serialization via <a href="https://rapidjson.org/">rapidjson</a> provided by THL A29 Limited, a Tencent company, and Milo Yip used under the <a href="http://opensource.org/licenses/MIT">MIT license</a>.)", nullptr);
     auto messageBoxText = messageBoxTextTemplate.arg(QCoreApplication::translate("MainWindow", "QtMolMove", nullptr));
 
     this->aboutMessageBox = std::make_unique<QMessageBox>(
@@ -288,17 +286,6 @@ void MainWindow::LoadTrajectory()
 
         return;
     }
-
-    this->Update();
-    this->UpdateSliderRange(static_cast<int>(this->trajectory->Frames().size()) - 1);
-}
-
-void MainWindow::LoadFixedTrajectory()
-{
-    this->trajectory = this->fixedRepository->Load("dummy");
-    this->ellipses.clear();
-    this->index = 0U;
-    this->ui->plot->clearItems();
 
     this->Update();
     this->UpdateSliderRange(static_cast<int>(this->trajectory->Frames().size()) - 1);
@@ -398,11 +385,6 @@ void MainWindow::OnSliderTimerTimeout()
 void MainWindow::OnLoadTriggered()
 {
     this->LoadTrajectory();
-}
-
-void MainWindow::OnLoadFixedTriggered()
-{
-    this->LoadFixedTrajectory();
 }
 
 void MainWindow::OnAboutTriggered()

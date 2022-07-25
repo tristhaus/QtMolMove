@@ -18,13 +18,11 @@
 
 SOURCES += \
     $$PWD/DiskRepository.cpp \
-    $$PWD/FixedRepository.cpp \
     $$PWD/Trajectory.cpp \
     $$PWD/Deserializer.cpp
 
 HEADERS += \
     $$PWD/DiskRepository.h \
-    $$PWD/FixedRepository.h \
     $$PWD/Repository.h \
     $$PWD/Trajectory.h \
     $$PWD/Deserializer.h

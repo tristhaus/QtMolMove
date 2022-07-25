@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-04/schema",
-  "$id": "https://github.com/tristhaus/QtMolMove/blob/trunk/trajectory.schema.json",
+  "$id": "https://raw.githubusercontent.com/tristhaus/QtMolMove/trunk/DistributionItems/trajectory.schema.json",
   "title": "Trajectory",
   "description": "A trajectory for QtMolMove.",
   "version": 1,

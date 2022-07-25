@@ -61,7 +61,6 @@ private:
 
     QMenuBar * menubar{};
     QAction * loadMenuAction{};
-    QAction * loadFixedMenuAction{};
     QAction * aboutMenuAction{};
 
     QWidget * centralwidget{};
@@ -193,10 +192,6 @@ private:
         auto loadMenuActionLabel = QCoreApplication::translate("MainWindow", "Load ...", nullptr);
         loadMenuAction = menubar->addAction(loadMenuActionLabel);
         loadMenuAction->setObjectName(QString::fromUtf8("load"));
-
-        auto loadFixedMenuActionLabel = QCoreApplication::translate("MainWindow", "Load Fixed ...", nullptr);
-        loadFixedMenuAction = menubar->addAction(loadFixedMenuActionLabel);
-        loadFixedMenuAction->setObjectName(QString::fromUtf8("loadFixed"));
 
         //: Arg 1 is a placeholder for the program name
         auto aboutActionLabelTemplate = QCoreApplication::translate("MainWindow", "About %1", nullptr);

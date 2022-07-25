@@ -23,7 +23,7 @@
 #include <QMessageBox>
 #include <atomic>
 
-#include "../Backend/FixedRepository.h"
+#include "../Backend/Repository.h"
 #include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
@@ -40,7 +40,6 @@ class MainWindow : public QMainWindow //NOLINT (cppcoreguidelines-special-member
 
 private:
     std::shared_ptr<Backend::Repository> repository;
-    std::shared_ptr<Backend::Repository> fixedRepository;
     Ui::MainWindow *ui;
 
     std::atomic_uint index;
@@ -80,7 +79,6 @@ private:
     void UpdatePlot();
     void UpdateIntervalEdit();
     void LoadTrajectory();
-    void LoadFixedTrajectory();
     void ShowAboutDialog();
     void StartPlaying();
     void StopPlaying();
@@ -100,7 +98,6 @@ private slots:
     void OnPlayTimerTimeout();
     void OnSliderTimerTimeout();
     void OnLoadTriggered();
-    void OnLoadFixedTriggered();
     void OnAboutTriggered();
     void OnSliderPressed();
     void OnSliderMoved();

@@ -2,27 +2,39 @@
 
 Copyright tristhaus 2022 and later.
 
-A simple program to display 2D trajectories of spherical objects.
+A simple program to display 2D trajectories of spherical objects, such as moving planets or a particle simulation.
+
+![main](/../screenshot/screenshot.png?raw=true)
 
 ## For Users
 
-This is alpha status.
+This is beta status. For an example of a valid trajectory, see [example-trajectory.json](/DistributionItems/example-trajectory.json). The schema is defined in [trajectory.schema.json](/DistributionItems/trajectory.schema.json).
 
 ## For Developers
 
-I am currently not looking for contributors. 
+I am currently not looking for contributors.
 
 It is necessary to define `_SKIP_LONG_TEST` or `_USE_LONG_TEST` as additional arguments to `qmake`. [Google Test](https://github.com/google/googletest) must be available and the `GOOGLETEST_DIR` environment variable must be set to its root directory. `clang-tidy` has been added, be sure to configure QtCreator to use the [.clang-tidy](.clang-tidy) file.
 
+The project is localized and you should build the translation to be included into the resource file of the frontend, which boils down to running `lrelease`. I suggest adding steps
+  * `/path/to/lupdate-pro.exe -noobsolete -locations none /path/to/QtPollyNomSuper.pro`
+  * `/path/to/lrelease-pro.exe /path/to/QtPollyNomSuper.pro`
+
+to the build process.
+
 ## License
 
-All source code licensed under GPL v3 (see LICENSE for terms).
+All source code licensed under GPL v3 (see LICENSE for terms), unless noted otherwise in the Attributions.
 
 ## Attributions
+
+Icon (Letters "MM", particles, and planetary system) by tristhaus.
 
 Graphical user interface built using [Qt](https://doc.qt.io/).
 
 [QCustomPlot](https://www.qcustomplot.com/) library (Version 2.1.0) by Emanuel Eichhammer used under the [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html).
+
+JSON de/serialization via [rapidjson](https://rapidjson.org/) provided by THL A29 Limited, a Tencent company, and Milo Yip used under the [MIT license](http://opensource.org/licenses/MIT).
 
 GoogleTest used under the following conditions:
 

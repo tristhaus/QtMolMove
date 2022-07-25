@@ -10,6 +10,28 @@ A simple program to display 2D trajectories of spherical objects, such as moving
 
 This is beta status. For an example of a valid trajectory, see [example-trajectory.json](/DistributionItems/example-trajectory.json). The schema is defined in [trajectory.schema.json](/DistributionItems/trajectory.schema.json).
 
+### Color Code
+
+| ID | 0 | 1 | 2 | 3 | 4 |
+| :--: | :--: | :--: | :--: | :--: | :--: |
+| RGB Color | `4169e1` | `2f4f4f` | `800000` | `ffd700` | `00008b` |
+|  | ![00](/../screenshot/00.png?raw=true) | ![01](/../screenshot/01.png?raw=true) | ![02](/../screenshot/02.png?raw=true) | ![03](/../screenshot/03.png?raw=true) | ![04](/../screenshot/04.png?raw=true) |
+
+| ID | 5 | 6 | 7 | 8 | 9 |
+| :--: | :--: | :--: | :--: | :--: | :--: |
+| RGB Color | `00ffff` | `da70d6` | `2e8b57` | `00bfff` | `ff8c00` |
+|  | ![05](/../screenshot/05.png?raw=true) | ![06](/../screenshot/06.png?raw=true) | ![07](/../screenshot/07.png?raw=true) | ![08](/../screenshot/08.png?raw=true) | ![09](/../screenshot/09.png?raw=true) |
+
+| ID | 10 | 11 | 12 | 13 | 14 |
+| :--: | :--: | :--: | :--: | :--: | :--: |
+| RGB Color | `ff0000` | `0000ff` | `eee8aa` | `ff1493` | `808000` |
+|  | ![10](/../screenshot/10.png?raw=true) | ![11](/../screenshot/11.png?raw=true) | ![12](/../screenshot/12.png?raw=true) | ![13](/../screenshot/13.png?raw=true) | ![14](/../screenshot/14.png?raw=true) |
+
+| ID | 15 | 16 | 17 | 18 | 19 |
+| :--: | :--: | :--: | :--: | :--: | :--: |
+| RGB Color | `d8bfd8` | `ff00ff` | `00ff7f` | `f08080` | `adff2f` |
+|  | ![15](/../screenshot/15.png?raw=true) | ![16](/../screenshot/16.png?raw=true) | ![17](/../screenshot/17.png?raw=true) | ![18](/../screenshot/18.png?raw=true) | ![19](/../screenshot/19.png?raw=true) |
+
 ## For Developers
 
 I am currently not looking for contributors.
